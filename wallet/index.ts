@@ -1,7 +1,7 @@
 import { eddsa } from 'elliptic'
 import ChainUtil from '../chain-util'
 import Blockchain from '../blockchain'
-import Transaction from './transaction'
+import Transaction, { TransactionType } from './transaction'
 import TransactionPool from './transaction-pool'
 
 export default class Wallet {
@@ -26,7 +26,7 @@ export default class Wallet {
 
   // Wrapper to create transaction from the wallet
   createTransaction(
-    type: number,
+    type: TransactionType,
     to: string,
     amount: number,
     blockchain: Blockchain,

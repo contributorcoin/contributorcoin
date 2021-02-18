@@ -2,9 +2,9 @@ import ChainUtil from '../chain-util'
 import Wallet from './'
 
 export enum TransactionType {
-  transaction,
-  committerReward,
-  contributorReward
+  transaction = 'TRANSACTION',
+  committerReward = 'COMMITTER REWARD',
+  contributorReward = 'CONTRIBUTOR REWARD'
 }
 
 export default class Transaction {
@@ -46,7 +46,7 @@ export default class Transaction {
 
   // Initiate new transaction
   static newTransaction(
-    type: number,
+    type: TransactionType,
     senderWallet: Wallet | null,
     to: string,
     amount: number
@@ -69,7 +69,7 @@ export default class Transaction {
 
   // Create a new transaction
   static generateTransaction(
-    type: number,
+    type: TransactionType,
     senderWallet: Wallet | null,
     to: string,
     amount: number
