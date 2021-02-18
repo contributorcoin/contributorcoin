@@ -1,2 +1,3 @@
+export const TRANSACTION_THRESHOLD = 5
 export const COMMITTER_REWARD = 20
 export const CONTRIBUTOR_REWARD = 80

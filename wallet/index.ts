@@ -2,6 +2,7 @@ import { eddsa } from 'elliptic'
 import ChainUtil from '../chain-util'
 import Blockchain from '../blockchain'
 import Transaction from './transaction'
+import TransactionPool from './transaction-pool'
 
 export default class Wallet {
   secret: string          // Wallet secret key
@@ -28,7 +29,8 @@ export default class Wallet {
     type: number,
     to: string,
     amount: number,
-    blockchain: Blockchain
+    blockchain: Blockchain,
+    transactionPool: TransactionPool
   ): Transaction | undefined {
     this.balance = this.getBalance(blockchain)
 
@@ -43,6 +45,7 @@ export default class Wallet {
     const transaction = Transaction.newTransaction(type, this, to, amount)
 
     if (transaction) {
+      transactionPool.addTransaction(transaction)
       return transaction
     }
   }

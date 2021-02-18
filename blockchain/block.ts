@@ -1,18 +1,19 @@
 import SHA256 from 'crypto-js/sha256'
+import Transaction from '../wallet/transaction'
 
 export default class Block {
   index: number
   timestamp: number
   lastHash: string
   hash: string
-  data: string[]
+  data: Transaction[]
 
   constructor(
     index: number,
     timestamp: number,
     lastHash: string,
     hash: string,
-    data: string[]
+    data: Transaction[]
   ) {
     this.index = index
     this.timestamp = timestamp
@@ -37,7 +38,7 @@ export default class Block {
   }
 
   // Create a new block
-  static createBlock(lastBlock: Block, data: string[]): Block {
+  static createBlock(lastBlock: Block, data: Transaction[]): Block {
     const index = lastBlock.index + 1
     const timestamp = Date.now()
     const lastHash = lastBlock.hash
@@ -51,7 +52,7 @@ export default class Block {
     index: number,
     timestamp: number,
     lastHash: string,
-    data: string[]
+    data: Transaction[]
   ): string {
     return SHA256(
       JSON.stringify(`${index}${timestamp}${lastHash}${data}`)

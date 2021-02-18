@@ -1,7 +1,12 @@
 import Block from './block'
 import Account from './account'
 import Transaction, { TransactionType } from '../wallet/transaction'
-import { COMMITTER_REWARD, CONTRIBUTOR_REWARD } from '../config'
+import TransactionPool from '../wallet/transaction-pool'
+import {
+  TRANSACTION_THRESHOLD,
+  COMMITTER_REWARD,
+  CONTRIBUTOR_REWARD
+} from '../config'
 
 export default class Blockchain {
   chain: Block[]    // The chain of all blocks
@@ -13,8 +18,14 @@ export default class Blockchain {
   }
 
   // Add a new block to the blockchain
-  addBlock(data: string[]): Block {
-    const block = Block.createBlock(this.chain[this.chain.length - 1], data)
+  addBlock(transactionPool: TransactionPool): Block {
+    const transactions = transactionPool.transactions
+    const blockTransactions = transactions.splice(0, TRANSACTION_THRESHOLD)
+
+    const block = Block.createBlock(
+      this.chain[this.chain.length - 1],
+      blockTransactions
+    )
 
     this.chain.push(block)
 
