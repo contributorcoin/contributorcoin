@@ -51,4 +51,9 @@ export default class Wallet {
   getBalance(blockchain: Blockchain): number {
     return blockchain.getBalance(this.publicKey)
   }
+
+  // Sign the transaction
+  sign(dataHash: string): string {
+    return this.keyPair.sign(dataHash).toHex()
+  }
 }
