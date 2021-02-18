@@ -13,8 +13,10 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^4.0.1",
+    "@types/elliptic": "^6.4.12",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.28",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "eslint": "^7.20.0",
@@ -25,6 +27,8 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "crypto-js": "^4.0.0"
+    "crypto-js": "^4.0.0",
+    "elliptic": "^6.5.4",
+    "uuid": "^8.3.2"
   }
 }
