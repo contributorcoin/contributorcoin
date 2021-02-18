@@ -2,24 +2,26 @@ import ChainUtil from '../chain-util'
 import Wallet from './'
 
 export enum TransactionType {
-  transaction
+  transaction,
+  committerReward,
+  contributorReward
 }
 
 export default class Transaction {
-  id: string            // Transaction UUID
-  timestamp: number     // Transaction time (now)
-  type: TransactionType // Transaction type
-  from: string          // Transaction sender
-  to: string            // Transaction receiver
-  amount: number        // Transaction amount
-  signature: string     // Transaction signature
+  id: string                // Transaction UUID
+  timestamp: number         // Transaction time (now)
+  type: TransactionType     // Transaction type
+  from: string | null       // Transaction sender
+  to: string                // Transaction receiver
+  amount: number            // Transaction amount
+  signature: string | null  // Transaction signature
 
   constructor(
     type: TransactionType,
-    from: string,
+    from: string | null,
     to: string,
     amount: number,
-    signature: string
+    signature: string | null
   ) {
     this.id = ChainUtil.id()
     this.timestamp = Date.now()
@@ -45,19 +47,21 @@ export default class Transaction {
   // Initiate new transaction
   static newTransaction(
     type: number,
-    senderWallet: Wallet,
+    senderWallet: Wallet | null,
     to: string,
     amount: number
   ): Transaction | undefined {
     // Validity checks
-    if (!senderWallet) {
-      console.log('✖️ Invalid: no sender provided')
-      return
-    } else if (amount > senderWallet.balance) {
-      console.log(
-        `✖️ Invalid: ${amount} exceeds the balance`
-      )
-      return
+    if (type === TransactionType.transaction) {
+      if (!senderWallet) {
+        console.log('✖️ Invalid: no sender provided')
+        return
+      } else if (amount > senderWallet.balance) {
+        console.log(
+          `✖️ Invalid: ${amount} exceeds the balance`
+        )
+        return
+      }
     }
 
     return Transaction.generateTransaction(type, senderWallet, to, amount)
@@ -66,10 +70,14 @@ export default class Transaction {
   // Create a new transaction
   static generateTransaction(
     type: number,
-    senderWallet: Wallet,
+    senderWallet: Wallet | null,
     to: string,
     amount: number
   ): Transaction | undefined {
+    if (type !== TransactionType.transaction) {
+      return new this(type, null, to, amount, null)
+    }
+
     if (senderWallet) {
       const signature = Transaction.signTransaction(to, amount, senderWallet)
       return new this(type, senderWallet.publicKey, to, amount, signature)
@@ -94,15 +102,19 @@ export default class Transaction {
   }
 
   static verifyTransaction(transaction: Transaction): boolean {
-    const output = {
-      to: transaction?.to,
-      amount: transaction.amount
-    }
+    if (transaction.from && transaction.signature) {
+      const output = {
+        to: transaction?.to,
+        amount: transaction.amount
+      }
 
-    return ChainUtil.verifySignature(
-      transaction?.from,
-      ChainUtil.hash(output.toString()),
-      transaction?.signature
-    )
+      return ChainUtil.verifySignature(
+        transaction.from,
+        ChainUtil.hash(output.toString()),
+        transaction.signature
+      )
+    }
+    
+    return false
   }
 }
