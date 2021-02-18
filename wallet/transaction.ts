@@ -114,7 +114,7 @@ export default class Transaction {
         transaction.signature
       )
     }
-    
+
     return false
   }
 }

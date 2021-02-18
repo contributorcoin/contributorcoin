@@ -67,6 +67,83 @@ export default class Blockchain {
     return transactions
   }
 
+  // Check that chain is valid
+  isValidChain(chain: Block[]): boolean {
+    if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) {
+      return false
+    }
+
+    for (let i = 0; i < chain.length; i++) {
+      const block = chain[i]
+      const lastBlock = chain[i - 1]
+
+      if (
+        (block.lastHash !== lastBlock.hash) ||
+        (block.hash !== Block.blockHash(block))
+      ) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  // Check to make sure block is valid
+  isValidBlock(block: Block, transactionPool: TransactionPool): boolean {
+    const lastBlock = this.chain[this.chain.length - 1]
+    if (
+      block.lastHash === lastBlock.hash &&
+      block.hash === Block.blockHash(block)
+    ) {
+      console.log('Block is valid')
+      this.addBlock(transactionPool)
+      this.executeTransactions(block)
+      return true
+    } else {
+      return false
+    }
+  }
+
+  // Replace with longer chain if available
+  replaceChain(newChain: Block[]): void {
+    if (newChain.length <= this.chain.length) {
+      console.log('✔️ Received chain is not longer than the current chain')
+      return
+    } else if (!this.isValidChain(newChain)) {
+      console.log('✖️ Received chain is invalid')
+      return
+    }
+
+    console.log('Replacing the current chain with new chain...')
+    this.resetState()
+    this.executeChain(newChain)
+    this.chain = newChain
+  }
+
+  // Execute transactions from blocks
+  executeTransactions(block: Block): void {
+    block.data.forEach((transaction: Transaction) => {
+      switch (transaction.type) {
+      case TransactionType.transaction:
+        this.accounts.update(transaction)
+        break
+      }
+    })
+  }
+
+  // Initialize execution of transactions on chain
+  executeChain(chain: Block[]): void {
+    chain.forEach(block => {
+      this.executeTransactions(block)
+    })
+  }
+
+  // Reset the blockchain state
+  resetState(): void {
+    this.chain = [Block.genesis()]
+    this.accounts = new Account()
+  }
+
   // Get the balance of an account
   getBalance(publicKey: string): number {
     return this.accounts.getBalance(publicKey)

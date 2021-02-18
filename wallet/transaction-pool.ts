@@ -23,4 +23,15 @@ export default class TransactionPool {
 
     return this.thresholdReached()
   }
+
+  // Verify that the transaction exists
+  transactionExists(transaction: Transaction): Transaction | undefined {
+    const exists = this.transactions.find(t => t.id === transaction.id)
+    return exists
+  }
+
+  // Clear the transaction pool
+  clear(): void {
+    this.transactions = []
+  }
 }

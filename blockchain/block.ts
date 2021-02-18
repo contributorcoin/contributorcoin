@@ -1,4 +1,5 @@
 import SHA256 from 'crypto-js/sha256'
+import ChainUtil from '../chain-util'
 import Transaction from '../wallet/transaction'
 
 export default class Block {
@@ -57,5 +58,11 @@ export default class Block {
     return SHA256(
       JSON.stringify(`${index}${timestamp}${lastHash}${data}`)
     ).toString()
+  }
+
+  // Initialize block hash
+  static blockHash(block: Block): string {
+    const { index, timestamp, lastHash, data } = block
+    return Block.hash(index, timestamp, lastHash, data)
   }
 }
