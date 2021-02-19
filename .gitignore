@@ -1,0 +1,8 @@
+.idea
+.DS_Store
+.env
+build
+dist
+dist-babel
+node_modules
+yarn-error.log
