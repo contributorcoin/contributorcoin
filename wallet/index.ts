@@ -33,6 +33,19 @@ export default class Wallet {
     transactionPool: TransactionPool
   ): Transaction | undefined {
     this.balance = this.getBalance(blockchain)
+    const transactionType = type ? type : TransactionType.transaction
+
+    // Only allow standard transactions from wallet
+    if (
+      ![TransactionType.transaction, TransactionType.stake].includes(
+        transactionType
+      )
+    ) {
+      console.log(
+        '✖️ Invalid transaction: You cannot create this type of transaction'
+      )
+      return
+    }
 
     // Check wallet balance
     if (amount > this.balance) {
@@ -42,7 +55,9 @@ export default class Wallet {
       return
     }
 
-    const transaction = Transaction.newTransaction(type, this, to, amount)
+    const transaction = Transaction.newTransaction(
+      transactionType, this, to, amount
+    )
 
     if (transaction) {
       transactionPool.addTransaction(transaction)
@@ -58,5 +73,10 @@ export default class Wallet {
   // Sign the transaction
   sign(dataHash: string): string {
     return this.keyPair.sign(dataHash).toHex()
+  }
+
+  // Get wallet public key
+  getPublicKey(): string {
+    return this.publicKey
   }
 }

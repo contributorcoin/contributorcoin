@@ -1,6 +1,6 @@
 import Transaction from '../wallet/transaction'
 
-interface Balance {
+export interface Balance {
   [key: string]: number
 }
 

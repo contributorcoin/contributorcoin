@@ -3,8 +3,10 @@ import Wallet from './'
 
 export enum TransactionType {
   transaction = 'TRANSACTION',
+  validatorReward = 'VALIDATOR REWARD',
   committerReward = 'COMMITTER REWARD',
-  contributorReward = 'CONTRIBUTOR REWARD'
+  contributorReward = 'CONTRIBUTOR REWARD',
+  stake = 'STAKE'
 }
 
 export default class Transaction {
@@ -52,7 +54,7 @@ export default class Transaction {
     amount: number
   ): Transaction | undefined {
     // Validity checks
-    if (type === TransactionType.transaction) {
+    if ([TransactionType.transaction, TransactionType.stake].includes(type)) {
       if (!senderWallet) {
         console.log('✖️ Invalid: no sender provided')
         return
@@ -74,7 +76,7 @@ export default class Transaction {
     to: string,
     amount: number
   ): Transaction | undefined {
-    if (type !== TransactionType.transaction) {
+    if (![TransactionType.transaction, TransactionType.stake].includes(type)) {
       return new this(type, null, to, amount, null)
     }
 

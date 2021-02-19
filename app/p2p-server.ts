@@ -80,13 +80,21 @@ export default class P2PServer {
           }
         }
         if (this.transactionPool.thresholdReached()) {
-          console.log('Creating block...')
-          const block = this.blockchain.addBlock(
-            this.transactionPool
-          )
-          console.log(`✔️ New block added: ${block.toString()}`)
-          this.syncChain()
-          this.broadcastBlock(block)
+          console.log(this.blockchain.getLeader(), this.wallet.getPublicKey())
+          if (this.blockchain.getLeader() == this.wallet.getPublicKey()) {
+            console.log('Creating block...')
+            const block = this.blockchain.addBlock(
+              this.transactionPool
+            )
+            console.log(`✔️ New block added: ${block.toString()}`)
+            this.syncChain()
+            this.blockchain.createValidatorReward(
+              block,
+              this.transactionPool,
+              this
+            )
+            this.broadcastBlock(block)
+          }
         }
         break
 

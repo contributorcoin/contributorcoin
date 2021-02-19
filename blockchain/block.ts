@@ -1,5 +1,6 @@
 import SHA256 from 'crypto-js/sha256'
 import ChainUtil from '../chain-util'
+import Wallet from '../wallet'
 import Transaction from '../wallet/transaction'
 
 export default class Block {
@@ -8,19 +9,25 @@ export default class Block {
   lastHash: string
   hash: string
   data: Transaction[]
+  validator: string
+  signature: string
 
   constructor(
     index: number,
     timestamp: number,
     lastHash: string,
     hash: string,
-    data: Transaction[]
+    data: Transaction[],
+    validator: string,
+    signature: string
   ) {
     this.index = index
     this.timestamp = timestamp
     this.lastHash = lastHash
     this.hash = hash
     this.data = data
+    this.validator = validator
+    this.signature = signature
   }
 
   // Stringify block data
@@ -29,23 +36,31 @@ export default class Block {
     Index     : ${this.index}
     Timestamp : ${this.timestamp}
     Last Hash : ${this.lastHash}
-    Hash      : ${this.hash}`
+    Hash      : ${this.hash}
+    Validator : ${this.validator}
+    Signature : ${this.signature}`
   }
 
   // Create Genesis block
   static genesis(): Block {
     const launchDate = new Date('2021-01-01').getTime()
-    return new this(0, launchDate, '----', 'genesis-hash', [])
+    return new this(0, launchDate, '----', 'genesis-hash', [], '', '')
   }
 
   // Create a new block
-  static createBlock(lastBlock: Block, data: Transaction[]): Block {
+  static createBlock(
+    lastBlock: Block,
+    data: Transaction[],
+    wallet: Wallet
+  ): Block {
     const index = lastBlock.index + 1
     const timestamp = Date.now()
     const lastHash = lastBlock.hash
     const hash = Block.hash(index, timestamp, lastHash, data)
+    const validator = wallet.getPublicKey()
+    const signature = Block.signBlockHash(hash, wallet)
 
-    return new this(index, timestamp, lastHash, hash, data)
+    return new this(index, timestamp, lastHash, hash, data,validator, signature)
   }
 
   // Create block hash
@@ -64,5 +79,24 @@ export default class Block {
   static blockHash(block: Block): string {
     const { index, timestamp, lastHash, data } = block
     return Block.hash(index, timestamp, lastHash, data)
+  }
+
+  // Sign the block
+  static signBlockHash(hash: string, wallet: Wallet): string {
+    return wallet.sign(hash)
+  }
+
+  // Verify the block signature
+  static verifyBlock(block: Block): boolean {
+    return ChainUtil.verifySignature(
+      block.validator,
+      block.signature,
+      Block.hash(block.index, block.timestamp, block.lastHash, block.data)
+    )
+  }
+
+  // Verify the lead validator
+  static verifyLeader(block: Block, leader: string | undefined): boolean {
+    return block.validator == leader ? true : false
   }
 }
