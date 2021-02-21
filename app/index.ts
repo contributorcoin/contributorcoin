@@ -4,6 +4,8 @@ import bodyParser from 'body-parser'
 import P2PServer from './p2p-server'
 import Wallet from '../wallet'
 import TransactionPool from '../wallet/transaction-pool'
+import Transaction from '../wallet/transaction'
+import Contribution from '../blockchain/contribution'
 
 const HTTP_PORT = process.env.HTTP_PORT || 3001
 const app = express()
@@ -51,26 +53,22 @@ app.post('/transact', (req, res) => {
   }
 })
 
-app.post('/contribute', (req, res) => {
+app.post('/contribute', async (req, res) => {
   console.log('Creating contribution transactions...')
-  const { committer, contributor, url } = req.body
-  const transactions = blockchain.createContributions(
-    committer,
-    contributor,
-    url
-  )
+  const { url } = req.body
+
+  const transactions = await Contribution.createContributions(url)
+
+  if (!transactions) {
+    console.log('✖️ Invalid contribution data!')
+    res.send()
+    return
+  }
 
   if (transactions && transactions.length) {
-    const committer = transactions.shift()
-
-    if (committer) {
-      transactionPool.addTransaction(committer)
-      console.log(`✔️ New committer transaction added: ${committer.toString()}`)
-      p2pserver.broadcastTransaction(committer)
-    }
 
     if (transactions && transactions.length) {
-      transactions.forEach((transaction) => {
+      transactions.forEach((transaction: Transaction) => {
         transactionPool.addTransaction(transaction)
         console.log(
           `✔️ New contributor transaction added: ${transaction.toString()}`
@@ -83,6 +81,7 @@ app.post('/contribute', (req, res) => {
   } else {
     console.log('✖️ Invalid contribution data!')
     res.send()
+    return
   }
 })
 
