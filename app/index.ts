@@ -59,29 +59,20 @@ app.post('/contribute', async (req, res) => {
 
   const transactions = await Contribution.createContributions(url)
 
-  if (!transactions) {
-    console.log('✖️ Invalid contribution data!')
+  if (!transactions || !transactions.length) {
+    console.log('✖️ No contribution transactions were found!')
     res.send()
     return
-  }
-
-  if (transactions && transactions.length) {
-
-    if (transactions && transactions.length) {
-      transactions.forEach((transaction: Transaction) => {
-        transactionPool.addTransaction(transaction)
-        console.log(
-          `✔️ New contributor transaction added: ${transaction.toString()}`
-        )
-        p2pserver.broadcastTransaction(transaction)
-      })
-    }
+  } else {
+    transactions.forEach((transaction: Transaction) => {
+      transactionPool.addTransaction(transaction)
+      console.log(
+        `✔️ New contributor transaction added: ${transaction.toString()}`
+      )
+      p2pserver.broadcastTransaction(transaction)
+    })
 
     res.redirect('/transactions')
-  } else {
-    console.log('✖️ Invalid contribution data!')
-    res.send()
-    return
   }
 })
 
