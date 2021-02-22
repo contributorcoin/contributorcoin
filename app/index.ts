@@ -60,7 +60,7 @@ app.post('/contribute', async (req, res) => {
   const transactions = await Contribution.createContributions(url)
 
   if (!transactions || !transactions.length) {
-    console.log('✖️ No contribution transactions were found!')
+    console.log('✖️ Unable to create transactions')
     res.send()
     return
   } else {

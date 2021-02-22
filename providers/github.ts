@@ -17,11 +17,6 @@ export default class Github {
     const contributors: string[] = []
     const contributionData: CommitData[] = []
 
-    // Return if incorrect data
-    if (!ownerString || !repoString || !commitString) {
-      return
-    }
-
     // Get repo data
     const repoResponse = await fetch(
       // eslint-disable-next-line max-len
@@ -31,38 +26,49 @@ export default class Github {
     // Convert data to JSON
     const repoData = await repoResponse.json()
 
+    if (repoData?.message === 'Not Found') {
+      console.log('✖️ Repository not found, must be a public repo')
+      return
+    }
+
     // Repo info
-    const privateRepo = repoData.private
     const defaultBranch = repoData.default_branch
     const stars = repoData.stargazers_count
 
-    // Add contributors if conditions met
-    if (!privateRepo && (stars > 100)) {
-      // Get commit data
-      const commitResponse = await fetch(
-        // eslint-disable-next-line max-len
-        `https://api.github.com/repos/${ownerString}/${repoString}/commits/${commitString}`
-      )
+    // Repo requirements
+    // if (stars < 100) {
+    //   console.log('✖️ Must have at least 100 stars')
+    //   return
+    // }
 
-      const commitData = await commitResponse.json()
+    // Get commit data
+    const commitResponse = await fetch(
+      // eslint-disable-next-line max-len
+      `https://api.github.com/repos/${ownerString}/${repoString}/commits/${commitString}`
+    )
 
-      // Commit info
-      const verified = commitData.commit.verification.verified
-      const signature = commitData.commit.verification.signature
-      const payload = commitData.commit.verification.payload.toString()
+    const commitData = await commitResponse.json()
 
-      const commitAuthor = commitData.author.login
+    // Commit info
+    const verified = commitData.commit.verification.verified
+    const signature = commitData.commit.verification.signature
+    const payload = commitData.commit.verification.payload.toString()
 
-      if (verified) {
-        // Add commit author
-        contributors.push(commitAuthor)
+    console.log(payload)
 
+    const commitAuthor = commitData.author.login
+
+    if (verified) {
+      // Add commit author
+      contributors.push(commitAuthor)
+
+      if (payload.match(/Co-authored-by: (.*)<(.*)>/gm)) {
         // Add co-authors
         for (const coauthor of payload.match(/Co-authored-by: (.*)<(.*)>/gm)) {
           const email = coauthor.split('<')[1].slice(0, -1)
 
           const userResponse = await fetch(
-          // eslint-disable-next-line max-len
+            // eslint-disable-next-line max-len
             `https://api.github.com/search/users?q=${email}`
           )
 
@@ -75,17 +81,17 @@ export default class Github {
             }
           }
         }
-
-
-        contributors.forEach(contributor => {
-          contributionData.push(
-            {
-              contributor: contributor,
-              signature: signature
-            }
-          )
-        })
       }
+
+
+      contributors.forEach(contributor => {
+        contributionData.push(
+          {
+            contributor: contributor,
+            signature: signature
+          }
+        )
+      })
     }
 
     return contributionData
