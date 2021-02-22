@@ -6,12 +6,8 @@ import P2PServer from '../app/p2p-server'
 import Wallet from '../wallet'
 import Transaction, { TransactionType } from '../wallet/transaction'
 import TransactionPool from '../wallet/transaction-pool'
-import {
-  TRANSACTION_THRESHOLD,
-  VALIDATOR_REWARD,
-  COMMITTER_REWARD,
-  CONTRIBUTOR_REWARD
-} from '../config'
+import Contribution from './contribution'
+import { TRANSACTION_THRESHOLD, VALIDATOR_REWARD } from '../config'
 
 const secret = 'i am the first leader'
 
@@ -42,41 +38,6 @@ export default class Blockchain {
     this.chain.push(block)
 
     return block
-  }
-
-  // Create a new contribution transactions
-  createContributions(
-    committer: string | null,
-    contributor: string | null,
-    url: string
-  ): Transaction[] {
-    const transactions = []
-
-    // TODO: Add validations before rewards
-
-    // Create comitter reward
-    if (committer) {
-      const committerTransaction = Transaction.newTransaction(
-        TransactionType.committerReward, null, committer, COMMITTER_REWARD
-      )
-
-      if (committerTransaction) {
-        transactions.push(committerTransaction)
-      }
-    }
-
-    // Create contributor reward
-    if (contributor) {
-      const contributorTransaction = Transaction.newTransaction(
-        TransactionType.contributorReward, null, contributor, CONTRIBUTOR_REWARD
-      )
-
-      if (contributorTransaction) {
-        transactions.push(contributorTransaction)
-      }
-    }
-
-    return transactions
   }
 
   // Check that chain is valid
