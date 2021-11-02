@@ -1,6 +1,6 @@
 # Protects the ledger files from manual changes
 
-name: Protect the ledger
+name: Protect the local blockchain ledger
 on:
   push:
     branches: [ $default-branch ]
