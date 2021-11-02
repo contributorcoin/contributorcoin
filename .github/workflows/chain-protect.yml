@@ -1,0 +1,14 @@
+# Protects the ledger files from manual changes
+
+name: Protect the ledger
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
