@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "Contributorcoin",
     "description": "An open-source cryptocurrency by and for contributors",
@@ -10,6 +10,22 @@
     }
   },
   "basePath": "/v1",
+  "servers": [
+    {
+      "url": "https://{environment}.contributorcoin.com/v1",
+      "description": "Hosted",
+      "variables": {
+        "environment": {
+          "default": "api",
+          "enum": ["api", "test.api"]
+        }
+      }
+    },
+    {
+      "url": "http://localhost:3001/v1",
+      "description": "Local"
+    }
+  ],
   "schemes": ["http", "https"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
@@ -17,6 +33,7 @@
     "/blocks": {
       "get": {
         "summary": "Returns blocks on the chain",
+        "tags": ["blocks"],
         "responses": {
           "200": {
             "description": "A list of blocks",
@@ -37,6 +54,7 @@
     "/block/{hash}": {
       "get": {
         "summary": "Gets a specific block by hash",
+        "tags": ["blocks"],
         "parameters": [
           {
             "in": "path",
@@ -62,27 +80,92 @@
         }
       }
     },
-    "/block/?index={index}": {
-      "get": {
-        "summary": "Gets a specific block by index",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "index",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true,
-            "description": "Index of the block"
-          }
-        ],
+    "/create": {
+      "post": {
+        "summary": "Creates a new block on the chain",
+        "tags": ["blocks"],
         "responses": {
           "200": {
-            "description": "A single block",
+            "description": "A list of blocks on the chain",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Block"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Block"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "summary": "Returns transactions on the chain",
+        "tags": ["transactions"],
+        "responses": {
+          "200": {
+            "description": "A list of transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transact": {
+      "post": {
+        "summary": "Creates a new transaction",
+        "tags": ["transactions"],
+        "requestBody": {
+          "description": "Transaction data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransaction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A list of blocks on the chain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Block"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-key": {
+      "get": {
+        "summary": "Gets public key of current wallet",
+        "tags": ["wallets"],
+        "responses": {
+          "200": {
+            "description": "The public key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "$ref": "#/components/schemas/Wallet"
                 }
               }
             }
@@ -132,9 +215,40 @@
             "type": "string"
           },
           "amount": {
-            "type": "integer"
+            "type": "number"
           },
           "signature": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTransaction": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "required": true
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string",
+            "required": true
+          },
+          "amount": {
+            "type": "number",
+            "required": true
+          }
+        }
+      },
+      "Wallet": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "publicKey": {
             "type": "string"
           }
         }
