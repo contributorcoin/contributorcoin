@@ -19,22 +19,7 @@ router.get('/blocks', (req, res) => {
 })
 
 router.get('/block/:hash', (req, res) => {
-  console.log(req.query)
-
-  if (req.query && Object.keys(req.query).length) {
-    if (req.query.index && typeof req.query.index === 'string') {
-      const index = parseInt(req.query.index)
-      res.json({ block: blockchain.getBlockByIndex(index) })
-    }
-  } else {
-    res.json({ block: blockchain.getBlockByHash(req.params.hash) })
-  }
-
-})
-
-// Transactions
-router.get('/transactions', (req, res) => {
-  res.json(transactionPool.transactions)
+  res.json({ block: blockchain.getBlockByHash(req.params.hash) })
 })
 
 router.post('/create', (req, res) => {
@@ -47,6 +32,11 @@ router.post('/create', (req, res) => {
   console.log(`✔️ New block added: ${block.toString()}`)
   p2pServer.syncChain()
   res.redirect('/blocks')
+})
+
+// Transactions
+router.get('/transactions', (req, res) => {
+  res.json(transactionPool.transactions)
 })
 
 router.post('/transact', (req, res) => {
