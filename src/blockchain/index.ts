@@ -132,6 +132,16 @@ export default class Blockchain {
     this.validators = new Validators()
   }
 
+  // Get block by hash
+  getBlockByHash(hash: string): Block | undefined {
+    return this.chain.find(element => element.hash === hash)
+  }
+
+  // Get block by index
+  getBlockByIndex(index: number): Block | undefined {
+    return this.chain.find(element => element.index === index)
+  }
+
   // Get the balance of an account
   getBalance(publicKey: string): number {
     return this.accounts.getBalance(publicKey)
