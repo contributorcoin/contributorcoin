@@ -3,9 +3,9 @@ import Wallet from './'
 
 export enum TransactionType {
   transaction = 'TRANSACTION',
-  validatorReward = 'VALIDATOR REWARD',
-  committerReward = 'COMMITTER REWARD',
-  contributorReward = 'CONTRIBUTOR REWARD',
+  validator = 'VALIDATOR',
+  committer = 'COMMITTER',
+  contributor = 'CONTRIBUTOR',
   stake = 'STAKE'
 }
 

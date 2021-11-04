@@ -32,7 +32,7 @@ export default class Contribution {
     // Create contributor reward
     verifiedData.forEach((commitData: CommitData) => {
       const contributorTransaction = Transaction.newTransaction(
-        TransactionType.contributorReward,
+        TransactionType.contributor,
         null,
         commitData.contributor,
         VALIDATOR_REWARD / verifiedData.length

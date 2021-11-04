@@ -168,7 +168,7 @@ export default class Blockchain {
 
     console.log('Creating validator reward transaction...')
     const validatorTransaction = Transaction.newTransaction(
-      TransactionType.validatorReward, null, validator, VALIDATOR_REWARD
+      TransactionType.validator, null, validator, VALIDATOR_REWARD
     )
     if (validatorTransaction) {
       transactionPool.addTransaction(validatorTransaction)
