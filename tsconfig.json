@@ -2,11 +2,12 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "rootDir": "./",
+    "rootDir": "./src",
     "outDir": "./build",
     "esModuleInterop": true,
     "removeComments": true,
     "strict": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
+    "resolveJsonModule": true,
   }
 }

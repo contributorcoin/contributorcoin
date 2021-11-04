@@ -1,0 +1,144 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contributorcoin",
+    "description": "An open-source cryptocurrency by and for contributors",
+    "version": "0.1.0",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "basePath": "/v1",
+  "schemes": ["http", "https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/blocks": {
+      "get": {
+        "summary": "Returns blocks on the chain",
+        "responses": {
+          "200": {
+            "description": "A list of blocks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Block"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/block/{hash}": {
+      "get": {
+        "summary": "Gets a specific block by hash",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "hash",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Hash of the block"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single block",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Block"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/block/?index={index}": {
+      "get": {
+        "summary": "Gets a specific block by index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "index",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Index of the block"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single block",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Block"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Block": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "lastHash": {
+            "type": "string"
+          },
+          "validator": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          }
+        }
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "signature": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
