@@ -1,4 +1,4 @@
-import ChainUtil from '../chain-util'
+import ChainUtil from '../utils/chain-util'
 import Wallet from './'
 import logger from '../utils/logger'
 

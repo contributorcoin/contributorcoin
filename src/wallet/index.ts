@@ -1,5 +1,5 @@
 import { eddsa } from 'elliptic'
-import ChainUtil from '../chain-util'
+import ChainUtil from '../utils/chain-util'
 import Blockchain from '../blockchain'
 import Transaction, { TransactionType } from './transaction'
 import TransactionPool from './transaction-pool'
