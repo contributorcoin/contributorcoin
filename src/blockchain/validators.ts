@@ -1,4 +1,5 @@
 import Transaction from '../wallet/transaction'
+import logger from '../utils/logger'
 
 export default class Validators {
   list: string[]

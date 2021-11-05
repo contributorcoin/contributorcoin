@@ -1,5 +1,6 @@
 import ChainUtil from '../chain-util'
 import Wallet from './'
+import logger from '../utils/logger'
 
 export enum TransactionType {
   transaction = 'TRANSACTION',
@@ -56,12 +57,10 @@ export default class Transaction {
     // Validity checks
     if ([TransactionType.transaction, TransactionType.stake].includes(type)) {
       if (!senderWallet) {
-        console.log('✖️ Invalid: no sender provided')
+        logger('error', 'Invalid: no sender provided')
         return
       } else if (amount > senderWallet.balance) {
-        console.log(
-          `✖️ Invalid: ${amount} exceeds the balance`
-        )
+        logger('error', `Invalid: ${amount} exceeds the balance`)
         return
       }
     }
@@ -84,7 +83,7 @@ export default class Transaction {
       const signature = Transaction.signTransaction(to, amount, senderWallet)
       return new this(type, senderWallet.publicKey, to, amount, signature)
     } else {
-      console.log('✖️ Invalid: no sender provided')
+      logger('error', 'Invalid: no sender provided')
       return
     }
   }

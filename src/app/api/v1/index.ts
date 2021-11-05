@@ -2,6 +2,7 @@ import express from 'express'
 import { blockchain, p2pServer, transactionPool, wallet } from '../..'
 import Transaction from '../../../wallet/transaction'
 import Contribution from '../../../blockchain/contribution'
+import logger from '../../../utils/logger'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './swagger.json'
 
@@ -24,12 +25,12 @@ router.get('/block/:hash', (req, res) => {
 
 router.post('/create', (req, res) => {
   if (!transactionPool.transactions || !transactionPool.transactions.length) {
-    console.log('✖️ No transactions in the pool!')
+    logger('error', 'No transactions in the pool!')
     return res.send()
   }
   console.log('Creating block...')
   const block = blockchain.addBlock(transactionPool)
-  console.log(`✔️ New block added: ${block.toString()}`)
+  logger('confirm', `New block added: ${block.toString()}`)
   p2pServer.syncChain()
   res.redirect('/blocks')
 })
@@ -50,27 +51,28 @@ router.post('/transact', (req, res) => {
     transactionPool
   )
   if (transaction) {
-    console.log(`✔️ New transaction added: ${transaction.toString()}`)
+    logger('confirm', `New transaction added: ${transaction.toString()}`)
     p2pServer.broadcastTransaction(transaction)
     res.redirect('/transactions')
   }
 })
 
 router.post('/contribute', async (req, res) => {
-  console.log('Creating contribution transactions...')
+  console.log('Creating contribution transaction(s)...')
   const { url } = req.body
 
   const transactions = await Contribution.createContributions(url)
 
   if (!transactions || !transactions.length) {
-    console.log('✖️ Unable to create transactions')
+    logger('error', 'Unable to create transactions')
     res.send()
     return
   } else {
     transactions.forEach((transaction: Transaction) => {
       transactionPool.addTransaction(transaction)
-      console.log(
-        `✔️ New contributor transaction added: ${transaction.toString()}`
+      logger(
+        'confirm',
+        `New contributor transaction added: ${transaction.toString()}`
       )
       p2pServer.broadcastTransaction(transaction)
     })

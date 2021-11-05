@@ -1,8 +1,5 @@
 import Transaction from '../wallet/transaction'
-
-export interface Balance {
-  [key: string]: number
-}
+import logger from '../utils/logger'
 
 export default class Account {
   addresses: string[] // An array of all addresses

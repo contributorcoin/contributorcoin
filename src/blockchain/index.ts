@@ -8,6 +8,7 @@ import Transaction, { TransactionType } from '../wallet/transaction'
 import TransactionPool from '../wallet/transaction-pool'
 import Contribution from './contribution'
 import { TRANSACTION_THRESHOLD, VALIDATOR_REWARD } from '../config'
+import logger from '../utils/logger'
 
 const secret = 'i am the first leader'
 
@@ -82,10 +83,10 @@ export default class Blockchain {
   // Replace with longer chain if available
   replaceChain(newChain: Block[]): void {
     if (newChain.length <= this.chain.length) {
-      console.log('✔️ Received chain is not longer than the current chain')
+      logger('confirm', 'Received chain is not longer than the current chain')
       return
     } else if (!this.isValidChain(newChain)) {
-      console.log('✖️ Received chain is invalid')
+      logger('error', 'Received chain is invalid')
       return
     }
 
@@ -110,7 +111,7 @@ export default class Blockchain {
             transaction.amount
           )
         } else {
-          console.log('✖️ Invalid sender data')
+          logger('error', 'Invalid sender data')
         }
         break
       }
@@ -172,9 +173,9 @@ export default class Blockchain {
     )
     if (validatorTransaction) {
       transactionPool.addTransaction(validatorTransaction)
-      console.log(
-        // eslint-disable-next-line max-len
-        `✔️ Validator reward transaction added:${validatorTransaction.toString()}`
+      logger(
+        'confirm',
+        `Validator reward transaction added:${validatorTransaction.toString()}`
       )
       p2pserver.broadcastTransaction(validatorTransaction)
     }

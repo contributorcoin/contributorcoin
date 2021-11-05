@@ -3,6 +3,7 @@ import ChainUtil from '../chain-util'
 import Blockchain from '../blockchain'
 import Transaction, { TransactionType } from './transaction'
 import TransactionPool from './transaction-pool'
+import logger from '../utils/logger'
 
 export default class Wallet {
   secret: string          // Wallet secret key
