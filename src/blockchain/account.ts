@@ -1,4 +1,4 @@
-import Transaction from '../wallet/transaction'
+import Transaction from '../transactions/transaction'
 import logger from '../utils/logger'
 
 export default class Account {

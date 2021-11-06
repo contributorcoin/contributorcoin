@@ -1,5 +1,4 @@
-import { threadId } from 'worker_threads'
-import Transaction from '../wallet/transaction'
+import Transaction from 'src/transactions/transaction'
 import { Balance } from './account'
 import logger from '../utils/logger'
 

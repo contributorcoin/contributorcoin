@@ -2,7 +2,7 @@ import WebSocket from 'ws'
 import Blockchain from '../blockchain'
 import Block from '../blockchain/block'
 import Wallet from '../wallet'
-import Transaction from '../wallet/transaction'
+import Transaction from '../transactions/transaction'
 import TransactionPool from '../wallet/transaction-pool'
 import logger from '../utils/logger'
 

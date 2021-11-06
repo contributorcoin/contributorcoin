@@ -1,7 +1,7 @@
 import { eddsa } from 'elliptic'
 import ChainUtil from '../utils/chain-util'
 import Blockchain from '../blockchain'
-import Transaction, { TransactionType } from './transaction'
+import ExchangeTransaction from '../transactions/exchange'
 import TransactionPool from './transaction-pool'
 import logger from '../utils/logger'
 
@@ -27,18 +27,18 @@ export default class Wallet {
 
   // Wrapper to create transaction from the wallet
   createTransaction(
-    type: TransactionType,
+    type: TransactionOptions,
     to: string,
     amount: number,
     blockchain: Blockchain,
     transactionPool: TransactionPool
-  ): Transaction | undefined {
+  ): ExchangeTransaction | undefined {
     this.balance = this.getBalance(blockchain)
-    const transactionType = type ? type : TransactionType.transaction
+    const transactionType = type ? type : TransactionOptions.exchange
 
     // Only allow standard transactions from wallet
     if (
-      ![TransactionType.transaction, TransactionType.stake].includes(
+      ![TransactionOptions.exchange, TransactionOptions.stake].includes(
         transactionType
       )
     ) {
@@ -56,9 +56,9 @@ export default class Wallet {
       return
     }
 
-    const transaction = Transaction.newTransaction(
-      transactionType, this, to, amount
-    )
+    const transaction = new ExchangeTransaction({
+      from: this, to, amount
+    })
 
     if (transaction) {
       transactionPool.addTransaction(transaction)

@@ -4,10 +4,10 @@ import Stake from './stake'
 import Validators from './validators'
 import P2PServer from '../app/p2p-server'
 import Wallet from '../wallet'
-import Transaction, { TransactionType } from '../wallet/transaction'
+import Transaction from '../transactions/transaction'
+import ValidationTransaction from '../transactions/validation'
 import TransactionPool from '../wallet/transaction-pool'
-import Contribution from './contribution'
-import { TRANSACTION_THRESHOLD, VALIDATOR_REWARD } from '../config'
+import config from '../config'
 import logger from '../utils/logger'
 
 const secret = 'i am the first leader'
@@ -28,7 +28,9 @@ export default class Blockchain {
   // Add a new block to the blockchain
   addBlock(transactionPool: TransactionPool): Block {
     const transactions = transactionPool.transactions
-    const blockTransactions = transactions.splice(0, TRANSACTION_THRESHOLD)
+    const blockTransactions = transactions.splice(
+      0, config.transactions.thresholdCount
+    )
 
     const block = Block.createBlock(
       this.chain[this.chain.length - 1],
@@ -100,10 +102,10 @@ export default class Blockchain {
   executeTransactions(block: Block): void {
     block.data.forEach((transaction: Transaction) => {
       switch (transaction.type) {
-      case TransactionType.transaction:
+      case TransactionOptions.exchange:
         this.accounts.update(transaction)
         break
-      case TransactionType.stake:
+      case TransactionOptions.stake:
         this.stakes.update(transaction)
         if (transaction.from && transaction.amount) {
           this.accounts.decrement(
@@ -168,9 +170,12 @@ export default class Blockchain {
     const validator = block.validator
 
     console.log('Creating validator reward transaction...')
-    const validatorTransaction = Transaction.newTransaction(
-      TransactionType.validator, null, validator, VALIDATOR_REWARD
-    )
+    const validatorTransaction = new ValidationTransaction({
+      to: validator,
+      amount: config.rewards.validation.total,
+      signature: block.signature,
+      hash: block.hash,
+    })
     if (validatorTransaction) {
       transactionPool.addTransaction(validatorTransaction)
       logger(

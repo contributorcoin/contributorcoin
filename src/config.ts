@@ -1,4 +1,16 @@
-export const TRANSACTION_THRESHOLD = 5
-export const VALIDATOR_REWARD = 100
-export const COMMITTER_REWARD = VALIDATOR_REWARD * 0.2
-export const CONTRIBUTOR_REWARD = VALIDATOR_REWARD * 0.8
+export default {
+  transactions: {
+    thresholdCount: 5,
+    poolTimeCap: 300000
+  },
+  rewards: {
+    contribution: {
+      total: 100,
+      authorsPercent: .8,
+      approversPercent: .2
+    },
+    validation: {
+      total: 10,
+    }
+  }
+}
