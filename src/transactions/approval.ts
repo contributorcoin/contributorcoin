@@ -1,4 +1,7 @@
 import Contribution from './contribution'
+import { TransactionOptions } from '../utils/enums'
+import logger from '../utils/logger'
+import config from '../config'
 
 export default class ApprovalTransaction extends Contribution {
   constructor({
@@ -21,6 +24,8 @@ export default class ApprovalTransaction extends Contribution {
       repo,
       pr
     })
+
+    this.init()
   }
 
   // Stringify transaction data
@@ -28,25 +33,26 @@ export default class ApprovalTransaction extends Contribution {
     return super.toString()
   }
 
+  init(): ApprovalTransaction | undefined {
+    // Validate transaction
+    if(!ApprovalTransaction.validate(this.amount)) return
+
+    return this
+  }
+
   // Validate the transaction
   static validate(amount: number): boolean {
     if (!super.validate(amount)) return false
 
+    const contributionConfig = config.rewards.contribution
+    const maxReward =
+      contributionConfig.total * contributionConfig.approversPercent
+
+    if (amount > maxReward) {
+      logger('error', 'Invalid: amount is greater than maximum approver reward')
+      return false
+    }
+
     return true
-  }
-
-  // Create the transaction
-  static create(
-    to: string,
-    amount: number,
-    signature: string,
-    provider: GitProviders,
-    owner: string,
-    repo: string,
-    pr: number
-  ): ApprovalTransaction | undefined {
-    if (!this.validate(amount)) return undefined
-
-    return new this({to, amount, signature, provider, owner, repo, pr})
   }
 }

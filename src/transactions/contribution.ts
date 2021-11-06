@@ -1,4 +1,5 @@
 import Transaction from './transaction'
+import { TransactionOptions } from '../utils/enums'
 import logger from '../utils/logger'
 import config from '../config'
 
@@ -28,6 +29,8 @@ export default class ContributionTransaction extends Transaction {
     this.owner = owner
     this.repo = repo
     this.pr = pr
+
+    this.init()
   }
 
   // Stringify transaction data
@@ -39,30 +42,26 @@ export default class ContributionTransaction extends Transaction {
     PR            : ${this.pr}`
   }
 
+  init(): ContributionTransaction | undefined {
+    // Validate transaction
+    if(!ContributionTransaction.validate(this.amount)) return
+
+    return this
+  }
+
   // Validate the transaction
   static validate(amount: number): boolean {
     if (!super.validate()) return false
 
-    if (amount > config.rewards.contribution.total) {
-      logger('error', 'Invalid: amount is greater than reward total')
+    const contributionConfig = config.rewards.contribution
+    const maxReward =
+      contributionConfig.total * contributionConfig.authorsPercent
+
+    if (amount > maxReward) {
+      logger('error', 'Invalid: amount is greater than maximum author reward')
       return false
     }
 
     return true
-  }
-
-  // Create the transaction
-  static create(
-    to: string,
-    amount: number,
-    signature: string,
-    provider: GitProviders,
-    owner: string,
-    repo: string,
-    pr: number
-  ): ContributionTransaction | undefined {
-    if (!this.validate(amount)) return undefined
-
-    return new this({to, amount, signature, provider, owner, repo, pr})
   }
 }

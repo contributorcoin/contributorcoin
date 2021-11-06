@@ -1,11 +1,12 @@
 import ChainUtil from '../utils/chain-util'
 import Wallet from '../wallet'
+import { TransactionOptions } from '../utils/enums'
 
 export default abstract class Transaction {
   id: string                // UUID
   timestamp: number         // Time (now)
   type: TransactionOptions  // Type of transaction
-  to: string                // Sender address
+  to: string | number       // Sender address
   amount: number            // Amount sent
   signature: string         // Verification signature
 

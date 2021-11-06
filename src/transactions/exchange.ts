@@ -1,6 +1,7 @@
 import Transaction from './transaction'
 import Wallet from '../wallet'
 import ChainUtil from '../utils/chain-util'
+import { TransactionOptions } from '../utils/enums'
 import logger from '../utils/logger'
 
 export default class ExchangeTransaction extends Transaction {

@@ -4,33 +4,35 @@ interface Balance {
   [key: string]: number
 }
 
-// Transactions
+// Processors
 
-declare enum TransactionOptions {
-  exchange = 'exchange',
-  validation = 'validation',
-  approval = 'approval',
-  contribution = 'contribution',
-  stake = 'stake'
-}
+declare type GitProviders = import('./utils/enums').GitProviders
 
-declare enum GitProviders {
-  github = 'github',
-}
-
-interface TransactionTypes {
-  type?: TransactionOptions
-  to: string
-  amount: number
-  signature: string
-}
-
-interface ContributionTypes extends TransactionTypes {
+interface PrData {
   provider: GitProviders
   owner: string
   repo: string
   pr: number
+  signature: string
 }
+
+interface ContributionUsers {
+  authors: (string | number)[]
+  approvers: (string | number)[]
+}
+
+// Transactions
+
+declare type TransactionOptions = import('./utils/enums').TransactionOptions
+
+interface TransactionTypes {
+  type?: TransactionOptions
+  to: string | number
+  amount: number
+  signature: string
+}
+
+declare type ContributionTypes = TransactionTypes & PrData
 
 interface ExchangeTypes extends TransactionTypes {
   from: string
