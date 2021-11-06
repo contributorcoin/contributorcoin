@@ -16,10 +16,12 @@ import api from './api'
 
 app.use(bodyParser.json())
 
+app.use('/', api)
+
 app.listen(HTTP_PORT, () => {
   console.log(`Listening on port ${HTTP_PORT}...`)
 })
 
-app.use('/', api)
-
 p2pServer.listen()
+
+export default app

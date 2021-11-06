@@ -1,7 +1,6 @@
 import express from 'express'
 import { blockchain, p2pServer, transactionPool, wallet } from '../..'
-import Transaction from '../../../wallet/transaction'
-import Contribution from '../../../blockchain/contribution'
+import PullRequestProcessor from '../../../processors/PullRequestProcessor'
 import logger from '../../../utils/logger'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './swagger.json'
@@ -40,7 +39,7 @@ router.get('/transactions', (req, res) => {
   res.json(transactionPool.transactions)
 })
 
-router.post('/transact', (req, res) => {
+router.post('/exchange', (req, res) => {
   console.log('Creating transaction...')
   const { to, amount, type } = req.body
   const transaction = wallet.createTransaction(
@@ -61,24 +60,31 @@ router.post('/contribute', async (req, res) => {
   console.log('Creating contribution transaction(s)...')
   const { url } = req.body
 
-  const transactions = await Contribution.createContributions(url)
+  const transactions = await PullRequestProcessor.createTransactions(url)
 
   if (!transactions || !transactions.length) {
     logger('error', 'Unable to create transactions')
     res.send()
     return
   } else {
-    transactions.forEach((transaction: Transaction) => {
+    for (let i = 0; i < transactions.length; i++) {
+      const transaction = transactions[i]
+
       transactionPool.addTransaction(transaction)
       logger(
         'confirm',
         `New contributor transaction added: ${transaction.toString()}`
       )
       p2pServer.broadcastTransaction(transaction)
-    })
+    }
 
     res.redirect('/transactions')
   }
+})
+
+router.post('/stake', (req, res) => {
+  console.log('Creating stake transaction...')
+  const { to, amount, type } = req.body
 })
 
 // Wallet
