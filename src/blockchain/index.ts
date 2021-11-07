@@ -9,6 +9,7 @@ import ValidationTransaction from '../transactions/validation'
 import TransactionPool from '../wallet/transaction-pool'
 import config from '../config'
 import logger from '../utils/logger'
+import Transaction from 'src/transactions/transaction'
 
 const secret = 'i am the first leader'
 
@@ -100,24 +101,9 @@ export default class Blockchain {
 
   // Execute transactions from blocks
   executeTransactions(block: Block): void {
-    // block.data.forEach((transaction: AnyTransaction) => {
-    //   switch (transaction.type) {
-    //   case TransactionOptions.exchange:
-    //     this.accounts.update(transaction)
-    //     break
-    //   case TransactionOptions.stake:
-    //     this.stakes.update(transaction)
-    //     if (transaction.from && transaction.amount) {
-    //       this.accounts.decrement(
-    //         transaction.from,
-    //         transaction.amount
-    //       )
-    //     } else {
-    //       logger('error', 'Invalid sender data')
-    //     }
-    //     break
-    //   }
-    // })
+    block.data.forEach((transaction: any) => {
+      this.accounts.update(transaction)
+    })
   }
 
   // Initialize execution of transactions on chain

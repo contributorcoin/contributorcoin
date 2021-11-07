@@ -1,5 +1,6 @@
 import ExchangeTransaction from '../transactions/exchange'
 import StakeTransaction from '../transactions/stake'
+import ValidationTransaction from '../transactions/validation'
 
 export default class Account {
   addresses: (string | number)[] // An array of all addresses
@@ -43,14 +44,23 @@ export default class Account {
   }
 
   // Initialize update of transactions
-  update(transaction: (ExchangeTransaction | StakeTransaction)): void {
-    if (transaction.amount && transaction?.from && transaction.to) {
-      const amount = transaction.amount
-      const from = transaction.from
-      const to = transaction.to
-      this.transfer(from, to, amount)
-    } else {
-      console.log('Invalid transaction details')
+  update( transaction: any ): void {
+    const amount = transaction.amount
+    const from = transaction.from
+    const to = transaction.to
+
+    console.log('UPDATING TRANSACTIONS')
+
+    switch (transaction.type) {
+    case 'validation' || 'contribution' || 'approval':
+      this.increment(to, amount)
+      break
+    case 'exchange' || 'stake':
+      if (from) {
+        this.transfer(from, to, amount)
+      } else {
+        console.log('Invalid transaction details')
+      }
     }
   }
 }
