@@ -4,7 +4,6 @@ import Blockchain from '../blockchain'
 import ExchangeTransaction from '../transactions/exchange'
 import TransactionPool from './transaction-pool'
 import { TransactionOptions } from '../utils/enums'
-import logger from '../utils/logger'
 
 export default class Wallet {
   secret: string          // Wallet secret key

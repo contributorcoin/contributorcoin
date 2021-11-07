@@ -30,9 +30,7 @@ export default class PullRequestProcessor {
 
     // Return if no verified data
     if (transactions.length === 0) {
-      const errorMessage = 'Contribution data cannot be verified'
-      logger('error', errorMessage)
-      throw Error(errorMessage)
+      throw Error('Contribution data cannot be verified')
     }
 
     return transactions
