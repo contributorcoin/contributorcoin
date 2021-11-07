@@ -6,9 +6,10 @@
   "author": "Contributorcoin",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/app/index.ts",
+    "dev": "nodemon src/app/index.ts --files",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:clear": "jest --clearCache",
     "build": "tsc"
   },
   "devDependencies": {
