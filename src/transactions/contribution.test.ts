@@ -1,5 +1,5 @@
-import ContributionTransaction from '../../transactions/contribution'
-import { GitProviders } from '../../utils/enums'
+import ContributionTransaction from './contribution'
+import { GitProviders } from '../utils/enums'
 
 describe('Contribution transaction', () => {
   const data = {

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import PullRequestProcessor from '../../processors/PullRequestProcessor'
+import PullRequestProcessor from '../PullRequestProcessor'
 
 const urls = {
   correct: 'https://github.com/contributorcoin/contributorcoin/commit/cb9f81fe84b9be70ce5cd022b907d62a730beb34',

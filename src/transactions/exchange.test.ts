@@ -1,4 +1,4 @@
-import ExchangeTransaction from '../../transactions/exchange'
+import ExchangeTransaction from './exchange'
 
 describe('Exchange transaction', () => {
   const data = {

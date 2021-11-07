@@ -1,9 +1,7 @@
 import express from 'express'
-import status from 'http-status'
 import { blockchain, p2pServer, transactionPool, wallet } from '../..'
 import PullRequestProcessor from '../../../processors/PullRequestProcessor'
 import { TransactionOptions } from '../../../utils/enums'
-import logger from '../../../utils/logger'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './swagger.json'
 
@@ -63,13 +61,7 @@ router.post('/create', (req, res) => {
 // Transactions
 router.get('/transactions', (req, res) => {
   try {
-    const transactions = transactionPool.transactions
-
-    if (!transactions || !transactionPool.transactions.length) {
-      throw new Error('No transactions in the pool')
-    }
-
-    res.status(200).json(transactions)
+    res.status(200).json(transactionPool.transactions)
   } catch(err) {
     res.status(400).send(err)
   }

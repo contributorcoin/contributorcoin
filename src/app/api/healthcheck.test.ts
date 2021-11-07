@@ -1,5 +1,5 @@
 import request from 'supertest'
-import app from '../../app'
+import app from '..'
 
 describe('Healthcheck API', () => {
   describe('GET /ping', () => {

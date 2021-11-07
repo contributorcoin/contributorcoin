@@ -1,5 +1,5 @@
-import ApprovalTransaction from '../../transactions/approval'
-import { GitProviders } from '../../utils/enums'
+import ApprovalTransaction from './approval'
+import { GitProviders } from '../utils/enums'
 
 describe('Approval transaction', () => {
   const data = {

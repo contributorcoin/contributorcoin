@@ -1,6 +1,6 @@
 import request from 'supertest'
-import app, { transactionPool } from '../../../app'
-import ValidationTransaction from '../../../transactions/validation'
+import app, { transactionPool } from '../../..'
+import ValidationTransaction from '../../../../transactions/validation'
 
 describe('GET /v1/transactions', () => {
 

@@ -1,6 +1,6 @@
 import request from 'supertest'
-import app from '../../../app'
-import ExchangeTransaction from '../../../transactions/exchange'
+import app from '../../..'
+// import ExchangeTransaction from '../../../../transactions/exchange'
 
 describe('POST /v1/exchange', () => {
   it('should return 400 when parameters are missing', (done) => {
@@ -26,7 +26,7 @@ describe('POST /v1/exchange', () => {
   //     })
   //     .expect(({ body }) => {
   //       console.log(body)
-  //        
+  //
   //     })
   //     .expect(201)
   //     .end(done)

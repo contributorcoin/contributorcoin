@@ -1,11 +1,11 @@
 import request from 'supertest'
 import app, {
-  blockchain,
-  p2pServer,
-  transactionPool,
+  // blockchain,
+  // p2pServer,
+  // transactionPool,
   wallet
-} from '../../../app'
-import ValidationTransaction from '../../../transactions/validation'
+} from '../../..'
+// import ValidationTransaction from '../../../../transactions/validation'
 
 describe('Wallet API', () => {
   describe('GET /v1/public-key', () => {

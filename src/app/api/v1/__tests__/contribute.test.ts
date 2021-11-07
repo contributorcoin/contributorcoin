@@ -1,5 +1,5 @@
 import request from 'supertest'
-import app from '../../../app'
+import app from '../../..'
 
 describe('POST /v1/contribute', () => {
   it('should return 400 when parameters are missing', (done) => {

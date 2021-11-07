@@ -1,4 +1,4 @@
-import ValidationTransaction from '../../transactions/validation'
+import ValidationTransaction from './validation'
 
 describe('Validation transaction', () => {
   const data = {

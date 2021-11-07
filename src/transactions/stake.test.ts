@@ -1,4 +1,4 @@
-import StakeTransaction from '../../transactions/stake'
+import StakeTransaction from './stake'
 
 describe('Stake transaction', () => {
   const data = {
