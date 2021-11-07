@@ -1,6 +1,8 @@
 import express from 'express'
+import status from 'http-status'
 import { blockchain, p2pServer, transactionPool, wallet } from '../..'
 import PullRequestProcessor from '../../../processors/PullRequestProcessor'
+import { TransactionOptions } from '../../../utils/enums'
 import logger from '../../../utils/logger'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './swagger.json'
@@ -15,89 +17,145 @@ router.use(
 
 // Blocks
 router.get('/blocks', (req, res) => {
-  res.json(blockchain.chain)
+  try {
+    const chain = blockchain.chain
+
+    if (!chain) throw new Error('Blockchain could not be retrieved')
+
+    res.status(200).json(chain)
+  } catch(err) {
+    res.status(400).send(err)
+  }
 })
 
 router.get('/block/:hash', (req, res) => {
-  res.json({ block: blockchain.getBlockByHash(req.params.hash) })
+  const hash = req.params.hash
+
+  if (!hash) return res.status(400).send('No hash provided')
+
+  try {
+    const block = blockchain.getBlockByHash(hash)
+
+    if (!block) throw new Error('No block found with that hash')
+
+    res.status(200).json(block)
+  } catch(err) {
+    res.status(400).send(err)
+  }
 })
 
 router.post('/create', (req, res) => {
   if (!transactionPool.transactions || !transactionPool.transactions.length) {
-    logger('error', 'No transactions in the pool!')
-    return res.send()
+    res.status(400).send('No transactions in the pool')
   }
-  console.log('Creating block...')
-  const block = blockchain.addBlock(transactionPool)
-  logger('confirm', `New block added: ${block.toString()}`)
-  p2pServer.syncChain()
-  res.redirect('/blocks')
+
+  try {
+    const block = blockchain.addBlock(transactionPool)
+
+    p2pServer.syncChain()
+
+    res.status(201).json(block)
+  } catch(err) {
+    res.status(400).send(err)
+  }
 })
 
 // Transactions
 router.get('/transactions', (req, res) => {
-  res.json(transactionPool.transactions)
+  try {
+    const transactions = transactionPool.transactions
+
+    if (!transactions || !transactionPool.transactions.length) {
+      throw new Error('No transactions in the pool')
+    }
+
+    res.status(200).json(transactions)
+  } catch(err) {
+    res.status(400).send(err)
+  }
 })
 
 router.post('/exchange', (req, res) => {
-  console.log('Creating transaction...')
-  const { to, amount, type } = req.body
-  const transaction = wallet.createTransaction(
-    type,
-    to,
-    amount,
-    blockchain,
-    transactionPool
-  )
-  if (transaction) {
-    logger('confirm', `New transaction added: ${transaction.toString()}`)
-    p2pServer.broadcastTransaction(transaction)
-    res.redirect('/transactions')
+  const { to, amount } = req.body
+
+  if (!to) return res.status(400).send('No receiver address provided')
+  if (!amount) return res.status(400).send('No amount provided')
+
+  try {
+    const transaction = wallet.createTransaction(
+      TransactionOptions.exchange,
+      to,
+      amount,
+      blockchain,
+      transactionPool
+    )
+
+    if (!transaction) {
+      throw new Error('Unable to create transaction')
+    } else {
+      p2pServer.broadcastTransaction(transaction)
+      res.status(201).json(transaction)
+    }
+  } catch(err) {
+    res.status(400).send(err)
   }
 })
 
 router.post('/contribute', async (req, res) => {
-  console.log('Creating contribution transaction(s)...')
   const { url } = req.body
 
-  const transactions = await PullRequestProcessor.createTransactions(url)
+  if (!url) return res.status(400).send('No url provided')
 
-  if (!transactions || !transactions.length) {
-    logger('error', 'Unable to create transactions')
-    res.send()
-    return
-  } else {
-    for (let i = 0; i < transactions.length; i++) {
-      const transaction = transactions[i]
+  try {
+    const transactions = await PullRequestProcessor.createTransactions(url)
 
-      transactionPool.addTransaction(transaction)
-      logger(
-        'confirm',
-        `New contributor transaction added: ${transaction.toString()}`
-      )
-      p2pServer.broadcastTransaction(transaction)
+    if (!transactions || !transactions.length) {
+      throw new Error('Unable to create transaction(s)')
+    } else {
+      for (let i = 0; i < transactions.length; i++) {
+        const transaction = transactions[i]
+
+        transactionPool.addTransaction(transaction)
+        p2pServer.broadcastTransaction(transaction)
+      }
+
+      res.status(201).json(transactions)
     }
-
-    res.redirect('/transactions')
+  } catch (err) {
+    res.status(400).send(err)
   }
 })
 
 router.post('/stake', (req, res) => {
-  console.log('Creating stake transaction...')
-  const { to, amount, type } = req.body
+  const { to, amount } = req.body
+
+  if (!to) return res.status(400).send('No receiver address provided')
+  if (!amount) return res.status(400).send('No amount provided')
 })
 
 // Wallet
 router.get('/public-key', (req, res) => {
-  res.json({ publicKey: wallet.publicKey })
+  const publicKey = wallet.publicKey
+
+  if (!publicKey) return res.status(400).send('No key returned')
+
+  res.status(200).json({ publicKey })
 })
 
 router.get('/balance', (req, res) => {
-  res.json({ balance: blockchain.getBalance(wallet.publicKey) })
+  const balance = blockchain.getBalance(wallet.publicKey)
+
+  if (!balance) return res.status(400).send('No balance found')
+
+  res.status(200).json({ balance })
 })
 
 router.get('/balance/:publicKey', (req, res) => {
-  res.json({ balance: blockchain.getBalance(req.params.publicKey) })
+  const balance = blockchain.getBalance(req.params.publicKey)
+
+  if (!balance) return res.status(400).send('No balance found')
+
+  res.status(200).json({ balance })
 })
 
 export default router

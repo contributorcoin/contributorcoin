@@ -18,10 +18,13 @@ app.use(bodyParser.json())
 
 app.use('/', api)
 
-app.listen(HTTP_PORT, () => {
-  console.log(`Listening on port ${HTTP_PORT}...`)
-})
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(HTTP_PORT, () => {
+    console.log(`Listening on port ${HTTP_PORT}...`)
+  })
 
-p2pServer.listen()
+  p2pServer.listen()
+}
+
 
 export default app
