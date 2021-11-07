@@ -1,6 +1,4 @@
-import { threadId } from 'worker_threads'
-import Transaction from '../wallet/transaction'
-import { Balance } from './account'
+import StakeTransaction from '../transactions/stake'
 
 export default class Stake {
   address: string
@@ -56,13 +54,13 @@ export default class Stake {
     return leader
   }
 
-  update(transaction: Transaction): void {
+  update(transaction: StakeTransaction): void {
     if (transaction.amount && transaction.from) {
       const amount = transaction.amount
       const from = transaction.from
       this.addStake(from, amount)
     } else {
-      console.log('✖️ Invalid sender credentials')
+      console.log('error', 'Invalid sender credentials')
     }
   }
 }

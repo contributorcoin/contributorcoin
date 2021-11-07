@@ -4,10 +4,12 @@ import Stake from './stake'
 import Validators from './validators'
 import P2PServer from '../app/p2p-server'
 import Wallet from '../wallet'
-import Transaction, { TransactionType } from '../wallet/transaction'
+import { TransactionOptions } from '../utils/enums'
+import ValidationTransaction from '../transactions/validation'
 import TransactionPool from '../wallet/transaction-pool'
-import Contribution from './contribution'
-import { TRANSACTION_THRESHOLD, VALIDATOR_REWARD } from '../config'
+import config from '../config'
+import logger from '../utils/logger'
+import Transaction from 'src/transactions/transaction'
 
 const secret = 'i am the first leader'
 
@@ -27,7 +29,9 @@ export default class Blockchain {
   // Add a new block to the blockchain
   addBlock(transactionPool: TransactionPool): Block {
     const transactions = transactionPool.transactions
-    const blockTransactions = transactions.splice(0, TRANSACTION_THRESHOLD)
+    const blockTransactions = transactions.splice(
+      0, config.transactions.thresholdCount
+    )
 
     const block = Block.createBlock(
       this.chain[this.chain.length - 1],
@@ -82,10 +86,10 @@ export default class Blockchain {
   // Replace with longer chain if available
   replaceChain(newChain: Block[]): void {
     if (newChain.length <= this.chain.length) {
-      console.log('✔️ Received chain is not longer than the current chain')
+      logger('confirm', 'Received chain is not longer than the current chain')
       return
     } else if (!this.isValidChain(newChain)) {
-      console.log('✖️ Received chain is invalid')
+      logger('error', 'Received chain is invalid')
       return
     }
 
@@ -97,23 +101,8 @@ export default class Blockchain {
 
   // Execute transactions from blocks
   executeTransactions(block: Block): void {
-    block.data.forEach((transaction: Transaction) => {
-      switch (transaction.type) {
-      case TransactionType.transaction:
-        this.accounts.update(transaction)
-        break
-      case TransactionType.stake:
-        this.stakes.update(transaction)
-        if (transaction.from && transaction.amount) {
-          this.accounts.decrement(
-            transaction.from,
-            transaction.amount
-          )
-        } else {
-          console.log('✖️ Invalid sender data')
-        }
-        break
-      }
+    block.data.forEach((transaction: any) => {
+      this.accounts.update(transaction)
     })
   }
 
@@ -130,6 +119,16 @@ export default class Blockchain {
     this.accounts = new Account()
     this.stakes = new Stake()
     this.validators = new Validators()
+  }
+
+  // Get block by hash
+  getBlockByHash(hash: string): Block | undefined {
+    return this.chain.find(element => element.hash === hash)
+  }
+
+  // Get block by index
+  getBlockByIndex(index: number): Block | undefined {
+    return this.chain.find(element => element.index === index)
   }
 
   // Get the balance of an account
@@ -157,14 +156,17 @@ export default class Blockchain {
     const validator = block.validator
 
     console.log('Creating validator reward transaction...')
-    const validatorTransaction = Transaction.newTransaction(
-      TransactionType.validatorReward, null, validator, VALIDATOR_REWARD
-    )
+    const validatorTransaction = new ValidationTransaction({
+      to: validator,
+      amount: config.rewards.validation.total,
+      signature: block.signature,
+      hash: block.hash,
+    })
     if (validatorTransaction) {
       transactionPool.addTransaction(validatorTransaction)
-      console.log(
-        // eslint-disable-next-line max-len
-        `✔️ Validator reward transaction added:${validatorTransaction.toString()}`
+      logger(
+        'confirm',
+        `Validator reward transaction added:${validatorTransaction.toString()}`
       )
       p2pserver.broadcastTransaction(validatorTransaction)
     }

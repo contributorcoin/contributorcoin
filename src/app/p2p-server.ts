@@ -2,8 +2,8 @@ import WebSocket from 'ws'
 import Blockchain from '../blockchain'
 import Block from '../blockchain/block'
 import Wallet from '../wallet'
-import Transaction from '../wallet/transaction'
 import TransactionPool from '../wallet/transaction-pool'
+import logger from '../utils/logger'
 
 const P2P_PORT = process.env.P2P_PORT ? parseInt(process.env.P2P_PORT) : 5001
 const peers = process.env.PEERS ? process.env.PEERS.split(',') : []
@@ -43,7 +43,7 @@ export default class P2PServer {
 
   connectSocket(socket: WebSocket): void {
     this.sockets.push(socket)
-    console.log('✔️ Socket connected')
+    logger('confirm', 'Socket connected')
     this.messageHandler(socket)
     this.closeConnectionHandler(socket)
     this.sendChain(socket)
@@ -59,7 +59,7 @@ export default class P2PServer {
   messageHandler(socket: WebSocket): void {
     socket.on('message', message => {
       const data = JSON.parse(message.toString())
-      console.log('✔️ Received data from peer:', data.type)
+      logger('confirm', `Received data from peer:${data.type}`)
 
       switch (data.type) {
       case MESSAGE_TYPE.chain:
@@ -86,7 +86,7 @@ export default class P2PServer {
             const block = this.blockchain.addBlock(
               this.transactionPool
             )
-            console.log(`✔️ New block added: ${block.toString()}`)
+            logger('confirm', `New block added: ${block.toString()}`)
             this.syncChain()
             this.blockchain.createValidatorReward(
               block,

@@ -1,8 +1,9 @@
 import { eddsa } from 'elliptic'
-import ChainUtil from '../chain-util'
+import ChainUtil from '../utils/chain-util'
 import Blockchain from '../blockchain'
-import Transaction, { TransactionType } from './transaction'
+import ExchangeTransaction from '../transactions/exchange'
 import TransactionPool from './transaction-pool'
+import { TransactionOptions } from '../utils/enums'
 
 export default class Wallet {
   secret: string          // Wallet secret key
@@ -26,38 +27,34 @@ export default class Wallet {
 
   // Wrapper to create transaction from the wallet
   createTransaction(
-    type: TransactionType,
+    type: TransactionOptions,
     to: string,
     amount: number,
     blockchain: Blockchain,
     transactionPool: TransactionPool
-  ): Transaction | undefined {
+  ): ExchangeTransaction | undefined {
     this.balance = this.getBalance(blockchain)
-    const transactionType = type ? type : TransactionType.transaction
+    const transactionType = type ? type : TransactionOptions.exchange
 
     // Only allow standard transactions from wallet
     if (
-      ![TransactionType.transaction, TransactionType.stake].includes(
+      ![TransactionOptions.exchange, TransactionOptions.stake].includes(
         transactionType
       )
     ) {
-      console.log(
-        '✖️ Invalid transaction: You cannot create this type of transaction'
+      throw new Error(
+        'Invalid transaction: You cannot create this type of transaction'
       )
-      return
     }
 
     // Check wallet balance
     if (amount > this.balance) {
-      console.log(
-        `✖️ ${amount} exceeds the wallet balance of ${this.balance}`
-      )
-      return
+      throw new Error(`${amount} exceeds the wallet balance of ${this.balance}`)
     }
 
-    const transaction = Transaction.newTransaction(
-      transactionType, this, to, amount
-    )
+    const transaction = new ExchangeTransaction({
+      from: this.publicKey, to, amount, signature: 'signed'
+    })
 
     if (transaction) {
       transactionPool.addTransaction(transaction)

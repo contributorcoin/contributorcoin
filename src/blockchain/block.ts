@@ -1,7 +1,7 @@
 import SHA256 from 'crypto-js/sha256'
-import ChainUtil from '../chain-util'
+import ChainUtil from '../utils/chain-util'
 import Wallet from '../wallet'
-import Transaction from '../wallet/transaction'
+import Transaction from '../transactions/transaction'
 
 export default class Block {
   index: number
@@ -60,7 +60,9 @@ export default class Block {
     const validator = wallet.getPublicKey()
     const signature = Block.signBlockHash(hash, wallet)
 
-    return new this(index, timestamp, lastHash, hash, data,validator, signature)
+    return new this(
+      index, timestamp, lastHash, hash, data, validator, signature
+    )
   }
 
   // Create block hash

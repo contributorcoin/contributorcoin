@@ -1,5 +1,5 @@
-import Transaction from './transaction'
-import { TRANSACTION_THRESHOLD } from '../config'
+import Transaction from '../transactions/transaction'
+import config from '../config'
 
 export default class TransactionPool {
   transactions: Transaction[] // All transactions in the pool
@@ -10,7 +10,7 @@ export default class TransactionPool {
 
   // Check to see if pool threshold has been reached
   thresholdReached(): boolean {
-    if (this.transactions.length >= TRANSACTION_THRESHOLD) {
+    if (this.transactions.length >= config.transactions.thresholdCount) {
       return true
     }
 

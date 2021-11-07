@@ -1,0 +1,258 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Contributorcoin",
+    "description": "An open-source cryptocurrency by and for contributors",
+    "version": "0.1.0",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "basePath": "/v1",
+  "servers": [
+    {
+      "url": "https://{environment}.contributorcoin.com/v1",
+      "description": "Hosted",
+      "variables": {
+        "environment": {
+          "default": "api",
+          "enum": ["api", "test.api"]
+        }
+      }
+    },
+    {
+      "url": "http://localhost:3001/v1",
+      "description": "Local"
+    }
+  ],
+  "schemes": ["http", "https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/blocks": {
+      "get": {
+        "summary": "Returns blocks on the chain",
+        "tags": ["blocks"],
+        "responses": {
+          "200": {
+            "description": "A list of blocks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Block"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/block/{hash}": {
+      "get": {
+        "summary": "Gets a specific block by hash",
+        "tags": ["blocks"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "hash",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Hash of the block"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single block",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Block"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/create": {
+      "post": {
+        "summary": "Creates a new block on the chain",
+        "tags": ["blocks"],
+        "responses": {
+          "200": {
+            "description": "A list of blocks on the chain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Block"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "summary": "Returns transactions on the chain",
+        "tags": ["transactions"],
+        "responses": {
+          "200": {
+            "description": "A list of transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transact": {
+      "post": {
+        "summary": "Creates a new transaction",
+        "tags": ["transactions"],
+        "requestBody": {
+          "description": "Transaction data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransaction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A list of blocks on the chain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Block"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-key": {
+      "get": {
+        "summary": "Gets public key of current wallet",
+        "tags": ["wallets"],
+        "responses": {
+          "200": {
+            "description": "The public key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "$ref": "#/components/schemas/Wallet"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Block": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "lastHash": {
+            "type": "string"
+          },
+          "validator": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          }
+        }
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "signature": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTransaction": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "required": true
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string",
+            "required": true
+          },
+          "amount": {
+            "type": "number",
+            "required": true
+          }
+        }
+      },
+      "Wallet": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "publicKey": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
