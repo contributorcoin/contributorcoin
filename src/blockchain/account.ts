@@ -1,8 +1,8 @@
-import Transaction from '../transactions/transaction'
-import logger from '../utils/logger'
+import ExchangeTransaction from '../transactions/exchange'
+import StakeTransaction from '../transactions/stake'
 
 export default class Account {
-  addresses: string[] // An array of all addresses
+  addresses: (string | number)[] // An array of all addresses
   balance: Balance    // An object with address balances
 
   constructor() {
@@ -11,7 +11,7 @@ export default class Account {
   }
 
   // Initialize a new account
-  initialize(address: string): void {
+  initialize(address: (string | number)): void {
     if (this.balance[address] == undefined) {
       this.balance[address] = 0
       this.addresses.push(address)
@@ -19,7 +19,7 @@ export default class Account {
   }
 
   // Transfer to accounts
-  transfer(from: string, to: string, amount: number): void {
+  transfer(from: string, to: (string | number), amount: number): void {
     this.initialize(from)
     this.initialize(to)
     this.increment(to, amount)
@@ -27,7 +27,7 @@ export default class Account {
   }
 
   // Increase receiver balance
-  increment(to: string, amount: number): void {
+  increment(to: (string | number), amount: number): void {
     this.balance[to] += amount
   }
 
@@ -43,8 +43,8 @@ export default class Account {
   }
 
   // Initialize update of transactions
-  update(transaction: Transaction): void {
-    if (transaction.amount && transaction.from && transaction.to) {
+  update(transaction: (ExchangeTransaction | StakeTransaction)): void {
+    if (transaction.amount && transaction?.from && transaction.to) {
       const amount = transaction.amount
       const from = transaction.from
       const to = transaction.to

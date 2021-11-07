@@ -1,4 +1,3 @@
-import Transaction from '../../transactions/transaction'
 import ContributionTransaction from '../../transactions/contribution'
 import ApprovalTransaction from '../../transactions/contribution'
 import config from '../../config'
@@ -15,7 +14,7 @@ export default abstract class GitProvider {
     approvers: (string | number)[],
     prData: PrData,
     verified: boolean,
-  ): Transaction[] {
+  ): (ContributionTransaction | ApprovalTransaction)[] {
     if (
       !verified ||
       !prData.signature ||
@@ -23,7 +22,7 @@ export default abstract class GitProvider {
       // (!approvers || approvers.length === 0)
     ) return []
 
-    const transactions: Transaction[] = []
+    const transactions: (ContributionTransaction | ApprovalTransaction)[] = []
 
     // Rewards
     const rewardType = config.rewards.contribution

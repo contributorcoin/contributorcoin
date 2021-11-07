@@ -60,7 +60,9 @@ export default class Block {
     const validator = wallet.getPublicKey()
     const signature = Block.signBlockHash(hash, wallet)
 
-    return new this(index, timestamp, lastHash, hash, data,validator, signature)
+    return new this(
+      index, timestamp, lastHash, hash, data, validator, signature
+    )
   }
 
   // Create block hash

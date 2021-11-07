@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // Blockchain
 
 interface Balance {
@@ -22,10 +23,16 @@ interface ContributionUsers {
 }
 
 // Transactions
+declare type Transaction = import('./transactions/transaction').default
+declare type ApprovalTransaction = import('./transactions/approval').default
+declare type ContributionTransaction = import('./transactions/contribution').default
+declare type ExchangeTransaction = import('./transactions/exchange').default
+declare type StakeTransaction = import('./transactions/stake').default
+declare type ValidationTransaction = import('./transactions/validation').default
 
 declare type TransactionOptions = import('./utils/enums').TransactionOptions
 
-interface TransactionTypes {
+declare interface TransactionTypes {
   type?: TransactionOptions
   to: string | number
   amount: number

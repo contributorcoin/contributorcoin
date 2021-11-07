@@ -12,7 +12,7 @@ export default class Github extends GitProvider {
   // GitHub verification
   static async verifyAndRetrieve(
     url: string
-  ): Promise<Transaction[]> {
+  ): Promise<(ContributionTransaction | ApprovalTransaction)[]> {
     const splitSlug = url.split('github.com/')[1].split('/')
     const owner = splitSlug[0]
     const repo = splitSlug[1]

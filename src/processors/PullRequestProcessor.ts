@@ -9,7 +9,9 @@ export default class PullRequestProcessor {
     this.url = url
   }
 
-  static async getTransactions(url: string): Promise<Transaction[]> {
+  static async getTransactions(
+    url: string
+  ): Promise<(ContributionTransaction | ApprovalTransaction)[]> {
     const github = url.match(
       /https?:\/\/github.com\/(([-a-z0-9])*\/){2}commit\/([a-z0-9])*$/gm
     )
@@ -23,7 +25,7 @@ export default class PullRequestProcessor {
 
   static async createTransactions(
     url: string
-  ): Promise<Transaction[]> {
+  ): Promise<(ContributionTransaction | ApprovalTransaction)[]> {
     const transactions = await this.getTransactions(url)
 
     // Return if no verified data

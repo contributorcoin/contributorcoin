@@ -1,5 +1,5 @@
-import Transaction from '../transactions/transaction'
-import logger from '../utils/logger'
+import ExchangeTransaction from '../transactions/exchange'
+import StakeTransaction from '../transactions/stake'
 
 export default class Validators {
   list: string[]
@@ -8,7 +8,7 @@ export default class Validators {
     this.list = []
   }
 
-  update(transaction: Transaction): boolean {
+  update(transaction: (ExchangeTransaction | StakeTransaction)): boolean {
     console.log(transaction)
     if (transaction.amount && transaction.to && transaction.from) {
       if (transaction.amount >= 25 && transaction.to == '0') {

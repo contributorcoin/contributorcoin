@@ -3,6 +3,7 @@ import ChainUtil from '../utils/chain-util'
 import Blockchain from '../blockchain'
 import ExchangeTransaction from '../transactions/exchange'
 import TransactionPool from './transaction-pool'
+import { TransactionOptions } from '../utils/enums'
 import logger from '../utils/logger'
 
 export default class Wallet {
@@ -42,22 +43,18 @@ export default class Wallet {
         transactionType
       )
     ) {
-      console.log(
-        '✖️ Invalid transaction: You cannot create this type of transaction'
+      throw new Error(
+        'Invalid transaction: You cannot create this type of transaction'
       )
-      return
     }
 
     // Check wallet balance
     if (amount > this.balance) {
-      console.log(
-        `✖️ ${amount} exceeds the wallet balance of ${this.balance}`
-      )
-      return
+      throw new Error(`${amount} exceeds the wallet balance of ${this.balance}`)
     }
 
     const transaction = new ExchangeTransaction({
-      from: this, to, amount
+      from: this.publicKey, to, amount, signature: 'signed'
     })
 
     if (transaction) {

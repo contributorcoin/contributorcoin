@@ -1,6 +1,4 @@
-import Transaction from 'src/transactions/transaction'
-import { Balance } from './account'
-import logger from '../utils/logger'
+import StakeTransaction from '../transactions/stake'
 
 export default class Stake {
   address: string
@@ -56,7 +54,7 @@ export default class Stake {
     return leader
   }
 
-  update(transaction: Transaction): void {
+  update(transaction: StakeTransaction): void {
     if (transaction.amount && transaction.from) {
       const amount = transaction.amount
       const from = transaction.from

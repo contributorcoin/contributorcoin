@@ -4,7 +4,7 @@ import Stake from './stake'
 import Validators from './validators'
 import P2PServer from '../app/p2p-server'
 import Wallet from '../wallet'
-import Transaction from '../transactions/transaction'
+import { TransactionOptions } from '../utils/enums'
 import ValidationTransaction from '../transactions/validation'
 import TransactionPool from '../wallet/transaction-pool'
 import config from '../config'
@@ -100,24 +100,24 @@ export default class Blockchain {
 
   // Execute transactions from blocks
   executeTransactions(block: Block): void {
-    block.data.forEach((transaction: Transaction) => {
-      switch (transaction.type) {
-      case TransactionOptions.exchange:
-        this.accounts.update(transaction)
-        break
-      case TransactionOptions.stake:
-        this.stakes.update(transaction)
-        if (transaction.from && transaction.amount) {
-          this.accounts.decrement(
-            transaction.from,
-            transaction.amount
-          )
-        } else {
-          logger('error', 'Invalid sender data')
-        }
-        break
-      }
-    })
+    // block.data.forEach((transaction: AnyTransaction) => {
+    //   switch (transaction.type) {
+    //   case TransactionOptions.exchange:
+    //     this.accounts.update(transaction)
+    //     break
+    //   case TransactionOptions.stake:
+    //     this.stakes.update(transaction)
+    //     if (transaction.from && transaction.amount) {
+    //       this.accounts.decrement(
+    //         transaction.from,
+    //         transaction.amount
+    //       )
+    //     } else {
+    //       logger('error', 'Invalid sender data')
+    //     }
+    //     break
+    //   }
+    // })
   }
 
   // Initialize execution of transactions on chain
