@@ -22,7 +22,7 @@ router.get('/blocks', (req, res) => {
 
     res.status(200).json(chain)
   } catch(err) {
-    res.status(400).send(err)
+    res.status(400).send(String(err))
   }
 })
 
@@ -31,6 +31,12 @@ router.get('/block/:hash', (req, res) => {
 
   if (!hash) return res.status(400).send('No hash provided')
 
+  if (typeof hash !== 'string') {
+    return res.status(400).send(
+      'Provided value of \'hash\' is not a string'
+    )
+  }
+
   try {
     const block = blockchain.getBlockByHash(hash)
 
@@ -38,7 +44,7 @@ router.get('/block/:hash', (req, res) => {
 
     res.status(200).json(block)
   } catch(err) {
-    res.status(400).send(err)
+    res.status(400).send(String(err))
   }
 })
 
@@ -54,7 +60,7 @@ router.post('/create', (req, res) => {
 
     res.status(201).json(block)
   } catch(err) {
-    res.status(400).send(err)
+    res.status(400).send(String(err))
   }
 })
 
@@ -63,7 +69,7 @@ router.get('/transactions', (req, res) => {
   try {
     res.status(200).json(transactionPool.transactions)
   } catch(err) {
-    res.status(400).send(err)
+    res.status(400).send(String(err))
   }
 })
 
@@ -72,6 +78,18 @@ router.post('/exchange', (req, res) => {
 
   if (!to) return res.status(400).send('No receiver address provided')
   if (!amount) return res.status(400).send('No amount provided')
+
+  if (typeof to !== ('string' || 'number')) {
+    return res.status(400).send(
+      'Provided value of \'to\' is not a string or number'
+    )
+  }
+
+  if (typeof amount !== 'number') {
+    return res.status(400).send(
+      'Provided value of \'amount\' is not a number'
+    )
+  }
 
   try {
     const transaction = wallet.createTransaction(
@@ -89,7 +107,7 @@ router.post('/exchange', (req, res) => {
       res.status(201).json(transaction)
     }
   } catch(err) {
-    res.status(400).send(err)
+    res.status(400).send(String(err))
   }
 })
 
@@ -97,6 +115,12 @@ router.post('/contribute', async (req, res) => {
   const { url } = req.body
 
   if (!url) return res.status(400).send('No url provided')
+
+  if (typeof url !== 'string') {
+    return res.status(400).send(
+      'Provided value of \'url\' is not a string'
+    )
+  }
 
   try {
     const transactions = await PullRequestProcessor.createTransactions(url)
@@ -114,7 +138,7 @@ router.post('/contribute', async (req, res) => {
       res.status(201).json(transactions)
     }
   } catch (err) {
-    res.status(400).send(err)
+    res.status(400).send(String(err))
   }
 })
 
@@ -123,6 +147,18 @@ router.post('/stake', (req, res) => {
 
   if (!to) return res.status(400).send('No receiver address provided')
   if (!amount) return res.status(400).send('No amount provided')
+
+  if (typeof to !== ('string' || 'number')) {
+    return res.status(400).send(
+      'Provided value of \'to\' is not a string or number'
+    )
+  }
+
+  if (typeof amount !== 'number') {
+    return res.status(400).send(
+      'Provided value of \'amount\' is not a number'
+    )
+  }
 })
 
 // Wallet
@@ -143,11 +179,25 @@ router.get('/balance', (req, res) => {
 })
 
 router.get('/balance/:publicKey', (req, res) => {
-  const balance = blockchain.getBalance(req.params.publicKey)
+  const publicKey = req.params.publicKey
 
-  if (!balance) return res.status(400).send('No balance found')
+  if (!publicKey) return res.status(400).send('No public key provided')
 
-  res.status(200).json({ balance })
+  if (typeof publicKey !== 'string') {
+    return res.status(400).send(
+      'Provided value of \'publicKey\' is not a string'
+    )
+  }
+
+  try {
+    const balance = blockchain.getBalance(publicKey)
+
+    if (!balance) return res.status(400).send('No balance found')
+
+    res.status(200).json({ balance })
+  } catch(err) {
+    res.status(400).send(String(err))
+  }
 })
 
 export default router

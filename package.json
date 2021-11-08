@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "nodemon src/app/index.ts --files",
     "test": "jest",
+    "test:src": "jest ./src",
+    "test:e2e": "jest ./e2e",
     "test:watch": "jest --watch",
     "test:clear": "jest --clearCache",
     "build": "tsc"

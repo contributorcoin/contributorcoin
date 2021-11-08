@@ -1,6 +1,6 @@
 import request from 'supertest'
-import app from '../../..'
-// import ExchangeTransaction from '../../../../transactions/exchange'
+import app from '../../src/app'
+// import ExchangeTransaction from '../src/transactions/exchange'
 
 describe('POST /v1/exchange', () => {
   it('should return 400 when parameters are missing', (done) => {
