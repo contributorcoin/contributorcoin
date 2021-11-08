@@ -4,8 +4,8 @@ import app, {
   // p2pServer,
   // transactionPool,
   wallet
-} from '../../..'
-// import ValidationTransaction from '../../../../transactions/validation'
+} from '../../src/app'
+// import ValidationTransaction from '../../src/transactions/validation'
 
 describe('Wallet API', () => {
   describe('GET /v1/public-key', () => {
