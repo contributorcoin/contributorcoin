@@ -1,41 +1,15 @@
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
-template: |
-  # What's Changed
-  $CHANGES
-categories:
-  - title: ':boom: Breaking Changes'
-    label: 'breaking change'
-  - title: ':rocket: New Features'
-    label: 'new feature'
-  - title: ':bug: Bug Fixes'
-    label: 'bug fix'
-  - title: ':sparkles: Enhancement'
-    label: 'enhancement'
-  - title: ':wrench: Maintenance'
-    label: 'maintenance'
-  - title: ':book: Documentation'
-    label: 'documentation'
-  - title: ':shield: Security'
-    label: 'security fix'
-  - title: ':gear: Dependency Updates'
-    label: 'dependencies'
+name: Release Drafter
+on:
+  pull_request:
+    branches: [ $default-branch ]
+    types: [ closed ]
 
-version-resolver:
-  major:
-    labels:
-      - 'breaking change'
-  minor:
-    labels:
-      - 'new feature'
-      - 'enhancement'
-  patch:
-    labels:
-      - 'bug fix'
-      - 'maintenance'
-      - 'documentation'
-      - 'dependencies'
-      - 'security'
-
-exclude-labels:
-  - 'skip-changelog'
+jobs:
+  update_release_draft:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      # Drafts your next Release notes as Pull Requests are merged into "master"
+      - uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
