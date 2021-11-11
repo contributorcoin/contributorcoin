@@ -2,95 +2,92 @@ import express from 'express'
 import { blockchain, p2pServer, transactionPool, wallet } from '../..'
 import PullRequestProcessor from '../../../processors/PullRequestProcessor'
 import swaggerUi from 'swagger-ui-express'
+import { BadRequestError } from '../../../utils/error'
 import swaggerDocument from './swagger.json'
 
 const router = express.Router()
 
-router.use(
-  '/docs',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDocument)
-)
+router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // Blocks
-router.get('/blocks', (req, res) => {
+router.get('/blocks', (_req, res, next) => {
   try {
     const chain = blockchain.chain
 
-    if (!chain) throw new Error('Blockchain could not be retrieved')
+    if (!chain) throw new BadRequestError('Blockchain could not be retrieved')
 
     res.status(200).json(chain)
   } catch(err) {
-    res.status(400).send(String(err))
+    next(err)
   }
 })
 
-router.get('/block/:hash', (req, res) => {
-  const hash = req.params.hash
-
-  if (!hash) return res.status(400).send('No hash provided')
-
-  if (typeof hash !== 'string') {
-    return res.status(400).send(
-      'Provided value of \'hash\' is not a string'
-    )
-  }
-
+router.get('/block/:hash', (req, res, next) => {
   try {
+    const hash = req.params.hash
+
+    if (!hash) throw new BadRequestError('No hash provided')
+
+    if (typeof hash !== 'string') {
+      throw new BadRequestError(
+        'Provided value of "hash" is not a string'
+      )
+    }
+
     const block = blockchain.getBlockByHash(hash)
 
-    if (!block) throw new Error('No block found with that hash')
+    if (!block) throw new BadRequestError('No block found with that hash')
 
     res.status(200).json(block)
   } catch(err) {
-    res.status(400).send(String(err))
+    next(err)
   }
 })
 
-router.post('/create', (req, res) => {
-  if (!transactionPool.transactions || !transactionPool.transactions.length) {
-    res.status(400).send('No transactions in the pool')
-  }
-
+router.post('/create', (_req, res, next) => {
   try {
+    if (!transactionPool.transactions || !transactionPool.transactions.length) {
+      throw new BadRequestError('No transactions in the pool')
+    }
+
     const block = blockchain.addBlock(transactionPool)
 
     p2pServer.syncChain()
 
     res.status(201).json(block)
   } catch(err) {
-    res.status(400).send(String(err))
+    next(err)
   }
 })
 
 // Transactions
-router.get('/transactions', (req, res) => {
+router.get('/transactions', (_req, res, next) => {
   try {
     res.status(200).json(transactionPool.transactions)
   } catch(err) {
-    res.status(400).send(String(err))
+    next(err)
   }
 })
 
-router.post('/exchange', (req, res) => {
-  const { to, amount } = req.body
-
-  if (!to) return res.status(400).send('No receiver address provided')
-  if (!amount) return res.status(400).send('No amount provided')
-
-  if (typeof to !== ('string' || 'number')) {
-    return res.status(400).send(
-      'Provided value of \'to\' is not a string or number'
-    )
-  }
-
-  if (typeof amount !== 'number') {
-    return res.status(400).send(
-      'Provided value of \'amount\' is not a number'
-    )
-  }
-
+router.post('/exchange', (req, res, next) => {
   try {
+    const { to, amount } = req.body
+
+    if (!to) throw new BadRequestError('No receiver address provided')
+    if (!amount) throw new BadRequestError('No amount provided')
+
+    if (typeof to !== ('string' || 'number')) {
+      throw new BadRequestError(
+        'Provided value of "to" is not a string or number'
+      )
+    }
+
+    if (typeof amount !== 'number') {
+      throw new BadRequestError(
+        'Provided value of "amount" is not a number'
+      )
+    }
+
     const transaction = wallet.createTransaction(
       'exchange',
       to,
@@ -100,32 +97,32 @@ router.post('/exchange', (req, res) => {
     )
 
     if (!transaction) {
-      throw new Error('Unable to create transaction')
+      throw new BadRequestError('Unable to create transaction')
     } else {
       p2pServer.broadcastTransaction(transaction)
       res.status(201).json(transaction)
     }
   } catch(err) {
-    res.status(400).send(String(err))
+    next(err)
   }
 })
 
-router.post('/contribute', async (req, res) => {
-  const { url } = req.body
-
-  if (!url) return res.status(400).send('No url provided')
-
-  if (typeof url !== 'string') {
-    return res.status(400).send(
-      'Provided value of \'url\' is not a string'
-    )
-  }
-
+router.post('/contribute', async (req, res, next) => {
   try {
+    const { url } = req.body
+
+    if (!url) return res.status(400).send('No url provided')
+
+    if (typeof url !== 'string') {
+      throw new BadRequestError(
+        'Provided value of "url" is not a string'
+      )
+    }
+
     const transactions = await PullRequestProcessor.createTransactions(url)
 
     if (!transactions || !transactions.length) {
-      throw new Error('Unable to create transaction(s)')
+      throw new BadRequestError('Unable to create transaction(s)')
     } else {
       for (let i = 0; i < transactions.length; i++) {
         const transaction = transactions[i]
@@ -137,65 +134,77 @@ router.post('/contribute', async (req, res) => {
       res.status(201).json(transactions)
     }
   } catch (err) {
-    res.status(400).send(String(err))
+    next(err)
   }
 })
 
-router.post('/stake', (req, res) => {
-  const { to, amount } = req.body
+router.post('/stake', (req, _res, next) => {
+  try {
+    const { to, amount } = req.body
 
-  if (!to) return res.status(400).send('No receiver address provided')
-  if (!amount) return res.status(400).send('No amount provided')
+    if (!to) throw new BadRequestError('No receiver address provided')
+    if (!amount) throw new BadRequestError('No amount provided')
 
-  if (typeof to !== ('string' || 'number')) {
-    return res.status(400).send(
-      'Provided value of \'to\' is not a string or number'
-    )
-  }
+    if (typeof to !== ('string' || 'number')) {
+      throw new BadRequestError(
+        'Provided value of "to" is not a string or number'
+      )
+    }
 
-  if (typeof amount !== 'number') {
-    return res.status(400).send(
-      'Provided value of \'amount\' is not a number'
-    )
+    if (typeof amount !== 'number') {
+      throw new BadRequestError(
+        'Provided value of "amount" is not a number'
+      )
+    }
+  } catch(err) {
+    next(err)
   }
 })
 
 // Wallet
-router.get('/public-key', (req, res) => {
-  const publicKey = wallet.publicKey
-
-  if (!publicKey) return res.status(400).send('No key returned')
-
-  res.status(200).json({ publicKey })
-})
-
-router.get('/balance', (req, res) => {
-  const balance = blockchain.getBalance(wallet.publicKey)
-
-  if (!balance) return res.status(400).send('No balance found')
-
-  res.status(200).json({ balance })
-})
-
-router.get('/balance/:publicKey', (req, res) => {
-  const publicKey = req.params.publicKey
-
-  if (!publicKey) return res.status(400).send('No public key provided')
-
-  if (typeof publicKey !== 'string') {
-    return res.status(400).send(
-      'Provided value of \'publicKey\' is not a string'
-    )
-  }
-
+router.get('/public-key', (_req, res, next) => {
   try {
-    const balance = blockchain.getBalance(publicKey)
+    const publicKey = wallet.publicKey
 
-    if (!balance) return res.status(400).send('No balance found')
+    if (!publicKey) throw new BadRequestError('No key returned')
+
+    res.status(200).json({ publicKey })
+  } catch(err) {
+    next(err)
+  }
+})
+
+router.get('/balance', (_req, res, next) => {
+  try {
+    const balance = blockchain.getBalance(wallet.publicKey)
+
+    if (!balance) throw new BadRequestError('No balance found')
 
     res.status(200).json({ balance })
   } catch(err) {
-    res.status(400).send(String(err))
+    next(err)
+  }
+})
+
+router.get('/balance/:publicKey', (req, res, next) => {
+  try {
+    const publicKey = req.params.publicKey
+
+    if (!publicKey) throw new BadRequestError('No public key provided')
+
+    if (typeof publicKey !== 'string') {
+      throw new BadRequestError(
+        'Provided value of "publicKey" is not a string'
+      )
+    }
+
+    const balance = blockchain.getBalance(publicKey)
+
+    if (!balance) throw new BadRequestError('No balance found')
+
+    res.status(200).json({ balance })
+  } catch(err) {
+    next(err)
   }
 })
 

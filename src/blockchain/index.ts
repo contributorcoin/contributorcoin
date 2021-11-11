@@ -4,6 +4,7 @@ import Stake from './stake'
 import Validators from './validators'
 import Wallet from '../wallet'
 import ValidationTransaction from '../transactions/validation'
+import { BadRequestError } from '../utils/error'
 import config from '../config'
 
 const secret = 'i am the first leader'
@@ -82,7 +83,7 @@ export default class Blockchain {
     if (newChain.length <= this.chain.length) {
       return
     } else if (!this.isValidChain(newChain)) {
-      throw new Error('Received chain is invalid')
+      throw new BadRequestError('Received chain is invalid')
     }
 
     this.resetState()

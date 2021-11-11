@@ -1,3 +1,4 @@
+import { BadRequestError } from '../utils/error'
 export default class Stake {
   address: string
   addresses: string[]
@@ -58,7 +59,7 @@ export default class Stake {
       const from = transaction.from
       this.addStake(from, amount)
     } else {
-      throw new Error('Invalid sender credentials')
+      throw new BadRequestError('Invalid sender credentials')
     }
   }
 }

@@ -72,7 +72,7 @@ interface ContributionUsers {
 
 // Transactions
 
-declare interface TransactionTypes {
+interface TransactionTypes {
   type?: TransactionOptions
   to: string
   amount: number

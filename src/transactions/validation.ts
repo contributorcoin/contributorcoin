@@ -1,4 +1,5 @@
 import Transaction from './transaction'
+import { BadRequestError } from '../utils/error'
 import config from '../config'
 
 export default class ValidationTransaction extends Transaction {
@@ -40,7 +41,7 @@ export default class ValidationTransaction extends Transaction {
     const maxReward = config.rewards.validation.total
 
     if (amount > maxReward) {
-      throw new Error(
+      throw new BadRequestError(
         'Invalid: amount is greater than maximum validation reward'
       )
     }

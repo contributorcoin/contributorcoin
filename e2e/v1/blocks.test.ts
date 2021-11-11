@@ -74,7 +74,7 @@ describe('Blocks API', () => {
         .post('/v1/create')
         .expect(({ body }) => {
           expect(typeof body).toBe('object')
-          expect(body.index).toBe(2)
+          expect(body.index).toBe(1)
           expect(body.data[0]).toMatchObject(data)
         })
         .expect(201)
