@@ -1,5 +1,6 @@
 import Transaction from './transaction'
 import ChainUtil from '../utils/chain-util'
+import { BadRequestError } from '../utils/error'
 
 export default class ExchangeTransaction extends Transaction {
   from: string  // Sender account
@@ -34,9 +35,9 @@ export default class ExchangeTransaction extends Transaction {
     if (!super.validate()) return false
 
     if (!senderWallet) {
-      throw new Error('Invalid: no sender provided')
+      throw new BadRequestError('Invalid: no sender provided')
     } else if (amount > senderWallet.balance) {
-      throw new Error(`Invalid: ${amount} exceeds the balance`)
+      throw new BadRequestError(`Invalid: ${amount} exceeds the balance`)
     }
 
     return true

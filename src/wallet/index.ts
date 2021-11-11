@@ -1,6 +1,7 @@
 import { eddsa } from 'elliptic'
 import ChainUtil from '../utils/chain-util'
 import ExchangeTransaction from '../transactions/exchange'
+import { BadRequestError } from '../utils/error'
 
 export default class Wallet {
   secret: string          // Wallet secret key
@@ -39,14 +40,16 @@ export default class Wallet {
         transactionType
       )
     ) {
-      throw new Error(
+      throw new BadRequestError(
         'Invalid transaction: You cannot create this type of transaction'
       )
     }
 
     // Check wallet balance
     if (amount > this.balance) {
-      throw new Error(`${amount} exceeds the wallet balance of ${this.balance}`)
+      throw new BadRequestError(
+        `${amount} exceeds the wallet balance of ${this.balance}`
+      )
     }
 
     const transaction = new ExchangeTransaction({

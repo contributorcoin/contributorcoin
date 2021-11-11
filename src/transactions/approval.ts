@@ -1,4 +1,5 @@
 import Contribution from './contribution'
+import { BadRequestError } from '../utils/error'
 import config from '../config'
 
 export default class ApprovalTransaction extends Contribution {
@@ -47,7 +48,9 @@ export default class ApprovalTransaction extends Contribution {
       contributionConfig.total * contributionConfig.approversPercent
 
     if (amount > maxReward) {
-      throw new Error('Invalid: amount is greater than maximum approver reward')
+      throw new BadRequestError(
+        'Invalid: amount is greater than maximum approver reward'
+      )
     }
 
     return true

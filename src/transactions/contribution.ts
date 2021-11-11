@@ -1,4 +1,5 @@
 import Transaction from './transaction'
+import { BadRequestError } from '../utils/error'
 import config from '../config'
 
 export default class ContributionTransaction extends Transaction {
@@ -56,7 +57,9 @@ export default class ContributionTransaction extends Transaction {
       contributionConfig.total * contributionConfig.authorsPercent
 
     if (amount > maxReward) {
-      throw new Error('Invalid: amount is greater than maximum author reward')
+      throw new BadRequestError(
+        'Invalid: amount is greater than maximum author reward'
+      )
     }
 
     return true

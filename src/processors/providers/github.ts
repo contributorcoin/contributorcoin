@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import GitProvider from './provider'
+import { BadRequestError } from '../../utils/error'
 import logger from '../../utils/logger'
 
 export default class Github extends GitProvider {
@@ -27,12 +28,12 @@ export default class Github extends GitProvider {
 
     // Check for error response
     if (pullsData?.message) {
-      throw new Error(pullsData.message)
+      throw new BadRequestError(pullsData.message)
     }
 
     // Check that pulls exist
     if (pullsData.length === 0) {
-      throw new Error('No pull requests associated with this commit')
+      throw new BadRequestError('No pull requests associated with this commit')
     }
 
     const pr = pullsData[0]
@@ -44,7 +45,7 @@ export default class Github extends GitProvider {
 
     // Check that repo is public
     if ( repoData?.visibility !== 'public') {
-      throw new Error('Repository must be a public repo')
+      throw new BadRequestError('Repository must be a public repo')
     }
 
     if (
@@ -52,17 +53,21 @@ export default class Github extends GitProvider {
       pr.merged_at !== pr.closed_at ||
       pr.base.ref !== defaultBranch
     ) {
-      throw new Error(`Pull request is not merged into ${defaultBranch} branch`)
+      throw new BadRequestError(
+        `Pull request is not merged into ${defaultBranch} branch`
+      )
     }
 
     if (pr.merge_commit_sha !== commit) {
-      throw new Error('Commit is not the merge commit for the pull request')
+      throw new BadRequestError(
+        'Commit is not the merge commit for the pull request'
+      )
     }
 
     // Repo star requirement
     // Does not apply to Contributorcoin core
     if (ownerRepo !== 'contributorcoin/contributorcoin' && stars < 100) {
-      throw new Error('Must have at least 100 stars')
+      throw new BadRequestError('Must have at least 100 stars')
     }
 
     // Get commit data
