@@ -36,7 +36,7 @@ export default abstract class Transaction {
   }
 
   // Validate the transaction
-  static validate(...any: any): boolean {
+  static validate(..._any: never): boolean {
     return true
   }
 

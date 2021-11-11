@@ -1,6 +1,4 @@
-import Transaction from '../transactions/transaction'
 import Github from './providers/github'
-import logger from '../utils/logger'
 
 export default class PullRequestProcessor {
   url: string

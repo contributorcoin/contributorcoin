@@ -4,12 +4,10 @@ import Stake from './stake'
 import Validators from './validators'
 import P2PServer from '../app/p2p-server'
 import Wallet from '../wallet'
-import { TransactionOptions } from '../utils/enums'
 import ValidationTransaction from '../transactions/validation'
 import TransactionPool from '../wallet/transaction-pool'
 import config from '../config'
 import logger from '../utils/logger'
-import Transaction from 'src/transactions/transaction'
 
 const secret = 'i am the first leader'
 
@@ -101,7 +99,7 @@ export default class Blockchain {
 
   // Execute transactions from blocks
   executeTransactions(block: Block): void {
-    block.data.forEach((transaction: any) => {
+    block.data.forEach((transaction: Transaction) => {
       this.accounts.update(transaction)
     })
   }

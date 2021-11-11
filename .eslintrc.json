@@ -8,7 +8,8 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:jest-dom/recommended",
-    "plugin:jsx-a11y/recommended"
+    "plugin:jsx-a11y/recommended",
+    "prettier"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -37,10 +38,6 @@
     "camelcase": ["warn", { "properties": "never" }],
     "no-new": "warn",
     "new-cap": ["error", { "newIsCap": true, "capIsNew": false }],
-    "no-unused-vars": [
-      "error",
-      { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
-    ],
     "indent": [ "error", 2 ],
     "linebreak-style": [ "error", "unix" ],
     "quotes": [ "error", "single" ],
