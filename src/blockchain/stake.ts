@@ -1,5 +1,3 @@
-import StakeTransaction from '../transactions/stake'
-
 export default class Stake {
   address: string
   addresses: string[]
@@ -60,7 +58,7 @@ export default class Stake {
       const from = transaction.from
       this.addStake(from, amount)
     } else {
-      console.log('error', 'Invalid sender credentials')
+      throw new Error('Invalid sender credentials')
     }
   }
 }

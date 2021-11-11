@@ -1,5 +1,5 @@
 export default class Account {
-  addresses: (string | number)[] // An array of all addresses
+  addresses: string[] // An array of all addresses
   balance: Balance    // An object with address balances
 
   constructor() {
@@ -8,7 +8,7 @@ export default class Account {
   }
 
   // Initialize a new account
-  initialize(address: (string | number)): void {
+  initialize(address: string): void {
     if (this.balance[address] == undefined) {
       this.balance[address] = 0
       this.addresses.push(address)
@@ -16,7 +16,7 @@ export default class Account {
   }
 
   // Transfer to accounts
-  transfer(from: string, to: (string | number), amount: number): void {
+  transfer(from: string, to: string, amount: number): void {
     this.initialize(from)
     this.initialize(to)
     this.increment(to, amount)
@@ -44,10 +44,12 @@ export default class Account {
     const amount = transaction.amount
     const to = transaction.to
 
-    console.log('UPDATING TRANSACTIONS')
-
     switch (transaction.type) {
-    case 'validation' || 'contribution' || 'approval':
+    case (
+      'validation' ||
+        'contribution' ||
+        'approval'
+    ):
       this.increment(to, amount)
       break
     case 'exchange' || 'stake':

@@ -1,7 +1,5 @@
 import SHA256 from 'crypto-js/sha256'
 import ChainUtil from '../utils/chain-util'
-import Wallet from '../wallet'
-import Transaction from '../transactions/transaction'
 
 export default class Block {
   index: number

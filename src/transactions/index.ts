@@ -1,5 +1,4 @@
 import ChainUtil from '../utils/chain-util'
-import Wallet from '../wallet'
 import { TransactionOptions } from '../utils/enums'
 
 export default abstract class Transaction {

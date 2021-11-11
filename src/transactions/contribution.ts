@@ -1,6 +1,5 @@
-import Transaction from './transaction'
+import Transaction from '.'
 import { TransactionOptions } from '../utils/enums'
-import logger from '../utils/logger'
 import config from '../config'
 
 export default class ContributionTransaction extends Transaction {
@@ -58,8 +57,7 @@ export default class ContributionTransaction extends Transaction {
       contributionConfig.total * contributionConfig.authorsPercent
 
     if (amount > maxReward) {
-      logger('error', 'Invalid: amount is greater than maximum author reward')
-      return false
+      throw new Error('Invalid: amount is greater than maximum author reward')
     }
 
     return true

@@ -1,6 +1,5 @@
 import Contribution from './contribution'
 import { TransactionOptions } from '../utils/enums'
-import logger from '../utils/logger'
 import config from '../config'
 
 export default class ApprovalTransaction extends Contribution {
@@ -49,8 +48,7 @@ export default class ApprovalTransaction extends Contribution {
       contributionConfig.total * contributionConfig.approversPercent
 
     if (amount > maxReward) {
-      logger('error', 'Invalid: amount is greater than maximum approver reward')
-      return false
+      throw new Error('Invalid: amount is greater than maximum approver reward')
     }
 
     return true
