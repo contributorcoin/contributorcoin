@@ -1,7 +1,7 @@
 import config from '../config'
 
 export default class TransactionPool {
-  transactions: Transaction[] // All transactions in the pool
+  transactions: AnyTransaction[] // All transactions in the pool
 
   constructor() {
     this.transactions = []
@@ -17,14 +17,14 @@ export default class TransactionPool {
   }
 
   // Add a transaction to the pool
-  addTransaction(transaction: Transaction): boolean {
+  addTransaction(transaction: AnyTransaction): boolean {
     this.transactions.push(transaction)
 
     return this.thresholdReached()
   }
 
   // Verify that the transaction exists
-  transactionExists(transaction: Transaction): Transaction | undefined {
+  transactionExists(transaction: AnyTransaction): AnyTransaction | undefined {
     const exists = this.transactions.find(t => t.id === transaction.id)
     return exists
   }

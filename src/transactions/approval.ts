@@ -1,10 +1,9 @@
 import Contribution from './contribution'
-import { TransactionOptions } from '../utils/enums'
 import config from '../config'
 
 export default class ApprovalTransaction extends Contribution {
   constructor({
-    type = TransactionOptions.approval,
+    type = 'approval',
     to,
     amount,
     signature,

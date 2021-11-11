@@ -11,20 +11,43 @@ declare type Stake = import('./blockchain/stake').default
 declare type Validators = import('./blockchain/validators').default
 
 declare type PullRequestProcessor = import('./processors/PullRequestProcessor').default
-declare type GitProvider = import('./processors/providers').default
+declare type GitProvider = import('./processors/providers/provider').default
 declare type Github = import('./processors/providers/github').default
 
-declare type Transaction = import('./transactions').default
+declare type Transaction = import('./transactions/transaction').default
 declare type ApprovalTransaction = import('./transactions/approval').default
 declare type ContributionTransaction = import('./transactions/contribution').default
 declare type ExchangeTransaction = import('./transactions/exchange').default
 declare type StakeTransaction = import('./transactions/stake').default
 declare type ValidationTransaction = import('./transactions/validation').default
 
+
 declare type ChainUtil = import('./utils/chain-util').default
 
 declare type Wallet = import('./wallet').default
 declare type TransactionPool = import('./wallet/transaction-pool').default
+
+// Enums
+declare type AnyTransaction =
+  ApprovalTransaction |
+  ContributionTransaction |
+  ExchangeTransaction |
+  StakeTransaction |
+  ValidationTransaction
+declare type ExchangeBasedTransactions =
+  ExchangeTransaction |
+  StakeTransaction
+declare type RewardBasedTransactions =
+  ApprovalTransaction |
+  ContributionTransaction |
+  ValidationTransaction
+declare type TransactionOptions =
+  'approval' |
+  'contribution' |
+  'exchange' |
+  'stake' |
+  'validation'
+declare type GitProviders = 'github'
 
 // Blockchain
 
@@ -33,8 +56,6 @@ interface Balance {
 }
 
 // Processors
-
-declare type GitProviders = import('./utils/enums').GitProviders
 
 interface PrData {
   provider: GitProviders
@@ -45,17 +66,15 @@ interface PrData {
 }
 
 interface ContributionUsers {
-  authors: (string | number)[]
-  approvers: (string | number)[]
+  authors: string[]
+  approvers: string[]
 }
 
 // Transactions
 
-declare type TransactionOptions = import('./utils/enums').TransactionOptions
-
 declare interface TransactionTypes {
   type?: TransactionOptions
-  to: string | number
+  to: string
   amount: number
   signature: string
 }

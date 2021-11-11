@@ -1,4 +1,8 @@
-import { TransactionOptions } from '../utils/enums'
+import ApprovalTransaction from '../transactions/approval'
+import ContributionTransaction from '../transactions/contribution'
+import ExchangeTransaction from '../transactions/exchange'
+import StakeTransaction from '../transactions/stake'
+import ValidationTransaction from '../transactions/validation'
 
 export default class Account {
   addresses: string[] // An array of all addresses
@@ -42,20 +46,21 @@ export default class Account {
   }
 
   // Initialize update of transactions
-  update( transaction: any ): void {
+  update(transaction: AnyTransaction): void {
     const amount = transaction.amount
-    const from = transaction.from
     const to = transaction.to
 
-    switch (transaction.type) {
-    case (
-      TransactionOptions.validation ||
-        TransactionOptions.contribution ||
-        TransactionOptions.approval
-    ):
+    if (
+      transaction instanceof (
+        ApprovalTransaction || ContributionTransaction || ValidationTransaction
+      )
+    ) {
       this.increment(to, amount)
-      break
-    case 'exchange' || 'stake':
+    } else if (
+      transaction instanceof (ExchangeTransaction || StakeTransaction)
+    ) {
+      const from = transaction.from
+
       if (from) {
         this.transfer(from, to, amount)
       } else {

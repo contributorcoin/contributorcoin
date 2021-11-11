@@ -6,7 +6,7 @@ export default class Block {
   timestamp: number
   lastHash: string
   hash: string
-  data: Transaction[]
+  data: AnyTransaction[]
   validator: string
   signature: string
 
@@ -15,7 +15,7 @@ export default class Block {
     timestamp: number,
     lastHash: string,
     hash: string,
-    data: Transaction[],
+    data: AnyTransaction[],
     validator: string,
     signature: string
   ) {
@@ -48,7 +48,7 @@ export default class Block {
   // Create a new block
   static createBlock(
     lastBlock: Block,
-    data: Transaction[],
+    data: AnyTransaction[],
     wallet: Wallet
   ): Block {
     const index = lastBlock.index + 1
@@ -68,7 +68,7 @@ export default class Block {
     index: number,
     timestamp: number,
     lastHash: string,
-    data: Transaction[]
+    data: AnyTransaction[]
   ): string {
     return SHA256(
       JSON.stringify(`${index}${timestamp}${lastHash}${data}`)

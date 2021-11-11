@@ -1,16 +1,15 @@
 import ChainUtil from '../utils/chain-util'
-import { TransactionOptions } from '../utils/enums'
 
 export default abstract class Transaction {
   id: string                // UUID
   timestamp: number         // Time (now)
   type: TransactionOptions  // Type of transaction
-  to: string | number       // Sender address
+  to: string                // Sender address
   amount: number            // Amount sent
   signature: string         // Verification signature
 
   constructor({
-    type = TransactionOptions.exchange,
+    type = 'exchange',
     to,
     amount,
     signature
@@ -35,7 +34,7 @@ export default abstract class Transaction {
   }
 
   // Validate the transaction
-  static validate(...any: any): boolean {
+  static validate(..._any: never): boolean {
     return true
   }
 

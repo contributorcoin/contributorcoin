@@ -1,9 +1,8 @@
 import Exchange from './exchange'
-import { TransactionOptions } from '../utils/enums'
 
 export default class StakeTransaction extends Exchange {
   constructor({
-    type = TransactionOptions.stake,
+    type = 'stake',
     from,
     amount,
     signature
