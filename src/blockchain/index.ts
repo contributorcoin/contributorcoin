@@ -2,14 +2,9 @@ import Block from './block'
 import Account from './account'
 import Stake from './stake'
 import Validators from './validators'
-import P2PServer from '../app/p2p-server'
 import Wallet from '../wallet'
-import { TransactionOptions } from '../utils/enums'
 import ValidationTransaction from '../transactions/validation'
-import TransactionPool from '../wallet/transaction-pool'
 import config from '../config'
-import logger from '../utils/logger'
-import Transaction from 'src/transactions/transaction'
 
 const secret = 'i am the first leader'
 
@@ -74,7 +69,6 @@ export default class Blockchain {
       Block.verifyBlock(block) &&
       Block.verifyLeader(block, this.getLeader())
     ) {
-      console.log('Block is valid')
       this.addBlock(transactionPool)
       this.executeTransactions(block)
       return true
@@ -86,14 +80,11 @@ export default class Blockchain {
   // Replace with longer chain if available
   replaceChain(newChain: Block[]): void {
     if (newChain.length <= this.chain.length) {
-      logger('confirm', 'Received chain is not longer than the current chain')
       return
     } else if (!this.isValidChain(newChain)) {
-      logger('error', 'Received chain is invalid')
-      return
+      throw new Error('Received chain is invalid')
     }
 
-    console.log('Replacing the current chain with new chain...')
     this.resetState()
     this.executeChain(newChain)
     this.chain = newChain
@@ -155,7 +146,6 @@ export default class Blockchain {
   ): void {
     const validator = block.validator
 
-    console.log('Creating validator reward transaction...')
     const validatorTransaction = new ValidationTransaction({
       to: validator,
       amount: config.rewards.validation.total,
@@ -164,10 +154,6 @@ export default class Blockchain {
     })
     if (validatorTransaction) {
       transactionPool.addTransaction(validatorTransaction)
-      logger(
-        'confirm',
-        `Validator reward transaction added:${validatorTransaction.toString()}`
-      )
       p2pserver.broadcastTransaction(validatorTransaction)
     }
   }

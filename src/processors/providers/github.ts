@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-import Transaction from '../../transactions/transaction'
-import GitProvider from './provider'
+import GitProvider from '.'
 import { GitProviders } from '../../utils/enums'
 import logger from '../../utils/logger'
 

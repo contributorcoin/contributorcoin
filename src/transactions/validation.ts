@@ -1,6 +1,5 @@
-import Transaction from './transaction'
+import Transaction from '.'
 import { TransactionOptions } from '../utils/enums'
-import logger from '../utils/logger'
 import config from '../config'
 
 export default class ValidationTransaction extends Transaction {
@@ -42,11 +41,9 @@ export default class ValidationTransaction extends Transaction {
     const maxReward = config.rewards.validation.total
 
     if (amount > maxReward) {
-      logger(
-        'error',
+      throw new Error(
         'Invalid: amount is greater than maximum validation reward'
       )
-      return false
     }
 
     return true
