@@ -11,8 +11,8 @@ declare type Stake = import('./blockchain/stake').default
 declare type Validators = import('./blockchain/validators').default
 
 declare type PullRequestProcessor = import('./processors/PullRequestProcessor').default
-declare type GitProvider = import('./processors/providers/provider').default
-declare type Github = import('./processors/providers/github').default
+declare type GitProvider = import('./providers/provider').default
+declare type Github = import('./providers/github').default
 
 declare type Transaction = import('./transactions/transaction').default
 declare type ApprovalTransaction = import('./transactions/approval').default

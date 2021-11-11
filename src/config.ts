@@ -12,5 +12,18 @@ export default {
     validation: {
       total: 10,
     }
-  }
+  },
+  approvedRepos: [
+    {
+      provider: 'github',
+      owner: 'contributorcoin',
+      repo: 'contributorcoin',
+    }
+  ],
+  bannedOwners: [
+    {
+      provider: 'github',
+      owner: 'usernameOrOrg'
+    }
+  ],
 }

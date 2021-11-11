@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import GitProvider from './provider'
-import { BadRequestError } from '../../utils/error'
-import logger from '../../utils/logger'
+import { BadRequestError } from '../utils/error'
+import logger from '../utils/logger'
 
 export default class Github extends GitProvider {
   constructor(url: string) {
@@ -15,8 +15,13 @@ export default class Github extends GitProvider {
     const splitSlug = url.split('github.com/')[1].split('/')
     const owner = splitSlug[0]
     const repo = splitSlug[1]
-    const ownerRepo = `${owner}/${repo}`
     const commit = splitSlug[3]
+
+    if (super.checkBannedOwners('github', owner)) {
+      throw new BadRequestError(
+        'This repo owner is on the Contributorcoin banned list'
+      )
+    }
 
     // Get PR and repo data
     const pullsResponse = await fetch(
@@ -65,8 +70,7 @@ export default class Github extends GitProvider {
     }
 
     // Repo star requirement
-    // Does not apply to Contributorcoin core
-    if (ownerRepo !== 'contributorcoin/contributorcoin' && stars < 100) {
+    if (!super.checkApprovedRepos('github', owner, repo) && stars < 100) {
       throw new BadRequestError('Must have at least 100 stars')
     }
 

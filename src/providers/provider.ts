@@ -1,6 +1,9 @@
-import ContributionTransaction from '../../transactions/contribution'
-import ApprovalTransaction from '../../transactions/contribution'
-import config from '../../config'
+import ContributionTransaction from '../transactions/contribution'
+import ApprovalTransaction from '../transactions/contribution'
+import config from '../config'
+
+const approvedRepos = config.approvedRepos
+const bannedOwners = config.bannedOwners
 
 export default abstract class GitProvider {
   url: string
@@ -54,5 +57,35 @@ export default abstract class GitProvider {
     }
 
     return transactions
+  }
+
+  static checkApprovedRepos(
+    provider: string,
+    owner: string,
+    repo: string
+  ): boolean {
+    const findApproved = approvedRepos.filter((e) => {
+      if (e.provider === provider && e.owner === owner && e.repo === repo) {
+        return true
+      }
+      return false
+    })
+
+    if (findApproved.length > 0) return true
+
+    return false
+  }
+
+  static checkBannedOwners(provider: string, owner: string) {
+    const findBanned = bannedOwners.filter((e) => {
+      if (e.provider === provider && e.owner === owner) {
+        return true
+      }
+      return false
+    })
+
+    if (findBanned.length > 0) return true
+
+    return false
   }
 }
