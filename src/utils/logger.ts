@@ -3,7 +3,7 @@ export enum LoggerType {
   error = 'error'
 }
 
-type LoggerTypeStrings = keyof typeof LoggerType;
+type LoggerTypeStrings = keyof typeof LoggerType
 
 export default function logger(type: LoggerTypeStrings, message: string): void {
   const symbols = {
