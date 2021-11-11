@@ -1,8 +1,6 @@
-import Transaction from './transaction'
-import Wallet from '../wallet'
+import Transaction from '.'
 import ChainUtil from '../utils/chain-util'
 import { TransactionOptions } from '../utils/enums'
-import logger from '../utils/logger'
 
 export default class ExchangeTransaction extends Transaction {
   from: string  // Sender account
@@ -37,11 +35,9 @@ export default class ExchangeTransaction extends Transaction {
     if (!super.validate()) return false
 
     if (!senderWallet) {
-      logger('error', 'Invalid: no sender provided')
-      return false
+      throw new Error('Invalid: no sender provided')
     } else if (amount > senderWallet.balance) {
-      logger('error', `Invalid: ${amount} exceeds the balance`)
-      return false
+      throw new Error(`Invalid: ${amount} exceeds the balance`)
     }
 
     return true

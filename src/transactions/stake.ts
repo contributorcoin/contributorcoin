@@ -1,5 +1,4 @@
 import Exchange from './exchange'
-import Wallet from '../wallet'
 import { TransactionOptions } from '../utils/enums'
 
 export default class StakeTransaction extends Exchange {

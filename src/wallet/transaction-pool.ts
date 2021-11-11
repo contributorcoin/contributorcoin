@@ -1,4 +1,3 @@
-import Transaction from '../transactions/transaction'
 import config from '../config'
 
 export default class TransactionPool {

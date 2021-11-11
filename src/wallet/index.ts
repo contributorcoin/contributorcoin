@@ -1,8 +1,6 @@
 import { eddsa } from 'elliptic'
 import ChainUtil from '../utils/chain-util'
-import Blockchain from '../blockchain'
 import ExchangeTransaction from '../transactions/exchange'
-import TransactionPool from './transaction-pool'
 import { TransactionOptions } from '../utils/enums'
 
 export default class Wallet {
