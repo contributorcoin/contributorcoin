@@ -6,7 +6,7 @@
   "author": "Contributorcoin",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/app/index.ts --files",
+    "start": "nodemon src/app/index.ts --files",
     "test": "jest",
     "test:src": "jest ./src",
     "test:e2e": "jest ./e2e",

@@ -30,7 +30,7 @@ The goal is to make a cryptocurrency that rewards contributions to open-source b
 
 ### API and Commands
 
-This version is created for a local development environment and is not ready for production. By running `yarn dev` a HTTP port is opened at `:3001` and a P2P port is opened at `:5001`. Please see below to learn more about nodes and ports. You can make API calls through a service like [Postman](https://www.postman.com/), mimicking the blockchain functionality with the below commands:
+This version is created for a local development environment and is not ready for production. By running `yarn start` a HTTP port is opened at `:3001` and a P2P port is opened at `:5001`. Please see below to learn more about nodes and ports. You can make API calls through a service like [Postman](https://www.postman.com/), mimicking the blockchain functionality with the below commands:
 
 - `GET /blocks`: retrieves the current blockchain
 - `GET /block/:hash`: retrieves specific block by hash
