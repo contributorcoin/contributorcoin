@@ -1,15 +1,18 @@
 import ApprovalTransaction from './approval'
-import { GitProviders } from '../utils/enums'
 
 describe('Approval transaction', () => {
+  const prData: PrData = {
+    provider: 'github',
+    owner: 'contributorcoin',
+    repo: 'contributorcoin',
+    pr: 2,
+    signature: 'signature1234567890',
+  }
+
   const data = {
     to: 'morganmspencer',
     amount: 10,
-    signature: 'signature1234567890',
-    provider: GitProviders.github,
-    owner: 'contributorcoin',
-    repo: 'contributorcoin',
-    pr: 2
+    ...prData
   }
 
   const transaction = new ApprovalTransaction(data)

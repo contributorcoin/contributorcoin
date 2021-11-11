@@ -1,7 +1,6 @@
 import { eddsa } from 'elliptic'
 import ChainUtil from '../utils/chain-util'
 import ExchangeTransaction from '../transactions/exchange'
-import { TransactionOptions } from '../utils/enums'
 
 export default class Wallet {
   secret: string          // Wallet secret key
@@ -32,11 +31,11 @@ export default class Wallet {
     transactionPool: TransactionPool
   ): ExchangeTransaction | undefined {
     this.balance = this.getBalance(blockchain)
-    const transactionType = type ? type : TransactionOptions.exchange
+    const transactionType = type ? type : 'exchange'
 
     // Only allow standard transactions from wallet
     if (
-      ![TransactionOptions.exchange, TransactionOptions.stake].includes(
+      !['exchange', 'stake'].includes(
         transactionType
       )
     ) {

@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
 import GitProvider from './provider'
-import { GitProviders } from '../../utils/enums'
 import logger from '../../utils/logger'
 
 export default class Github extends GitProvider {
@@ -80,11 +79,11 @@ export default class Github extends GitProvider {
 
     const commitAuthor = commitData.author.id
 
-    const authors: (string | number)[] = []
-    const approvers: (string | number)[] = []
+    const authors: string[] = []
+    const approvers: string[] = []
 
-    const prData = {
-      provider: GitProviders.github,
+    const prData: PrData = {
+      provider: 'github',
       owner,
       repo,
       pr: pr.number,

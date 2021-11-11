@@ -1,5 +1,4 @@
-import Transaction from '.'
-import { TransactionOptions } from '../utils/enums'
+import Transaction from './transaction'
 import config from '../config'
 
 export default class ContributionTransaction extends Transaction {
@@ -9,7 +8,7 @@ export default class ContributionTransaction extends Transaction {
   pr: number
 
   constructor({
-    type = TransactionOptions.contribution,
+    type = 'contribution',
     to,
     amount,
     signature,

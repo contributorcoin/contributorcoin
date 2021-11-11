@@ -1,12 +1,11 @@
-import Transaction from '.'
+import Transaction from './transaction'
 import ChainUtil from '../utils/chain-util'
-import { TransactionOptions } from '../utils/enums'
 
 export default class ExchangeTransaction extends Transaction {
   from: string  // Sender account
 
   constructor({
-    type = TransactionOptions.exchange,
+    type = 'exchange',
     from,
     to,
     amount,

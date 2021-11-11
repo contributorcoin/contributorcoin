@@ -1,12 +1,11 @@
-import Transaction from '.'
-import { TransactionOptions } from '../utils/enums'
+import Transaction from './transaction'
 import config from '../config'
 
 export default class ValidationTransaction extends Transaction {
   hash: string  // Hash of validated block
 
   constructor({
-    type = TransactionOptions.validation,
+    type = 'validation',
     to,
     amount,
     signature,

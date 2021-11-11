@@ -92,7 +92,7 @@ export default class Blockchain {
 
   // Execute transactions from blocks
   executeTransactions(block: Block): void {
-    block.data.forEach((transaction: Transaction) => {
+    block.data.forEach((transaction: AnyTransaction) => {
       this.accounts.update(transaction)
     })
   }

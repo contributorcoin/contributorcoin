@@ -10,8 +10,8 @@ export default abstract class GitProvider {
   }
 
   static createTransactions(
-    authors: (string | number)[],
-    approvers: (string | number)[],
+    authors: string[],
+    approvers: string[],
     prData: PrData,
     verified: boolean,
   ): (ContributionTransaction | ApprovalTransaction)[] {

@@ -6,7 +6,6 @@ export default class Validators {
   }
 
   update(transaction: (ExchangeTransaction | StakeTransaction)): boolean {
-    console.log(transaction)
     if (transaction.amount && transaction.to && transaction.from) {
       if (transaction.amount >= 25 && transaction.to == '0') {
         this.list.push(transaction.from)

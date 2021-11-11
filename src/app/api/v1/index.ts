@@ -1,7 +1,6 @@
 import express from 'express'
 import { blockchain, p2pServer, transactionPool, wallet } from '../..'
 import PullRequestProcessor from '../../../processors/PullRequestProcessor'
-import { TransactionOptions } from '../../../utils/enums'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from './swagger.json'
 
@@ -93,7 +92,7 @@ router.post('/exchange', (req, res) => {
 
   try {
     const transaction = wallet.createTransaction(
-      TransactionOptions.exchange,
+      'exchange',
       to,
       amount,
       blockchain,
