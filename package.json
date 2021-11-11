@@ -13,7 +13,7 @@
     "test:watch": "jest --watch",
     "test:clear": "jest --clearCache",
     "lint": "eslint src e2e --fix",
-    "build": "tsc"
+    "build": "tsc -p tsconfig.build.json"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.0",
