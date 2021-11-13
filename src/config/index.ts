@@ -1,3 +1,6 @@
+import approved from './approved'
+import banned from './banned'
+
 export default {
   transactions: {
     thresholdCount: 5,
@@ -13,17 +16,6 @@ export default {
       total: 10,
     }
   },
-  approvedRepos: [
-    {
-      provider: 'github',
-      owner: 'contributorcoin',
-      repo: 'contributorcoin',
-    }
-  ],
-  bannedOwners: [
-    {
-      provider: 'github',
-      owner: 'usernameOrOrg'
-    }
-  ],
+  ...approved,
+  ...banned,
 }
