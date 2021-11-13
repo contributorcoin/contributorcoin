@@ -1,3 +1,6 @@
+import approved from './approved'
+import banned from './banned'
+
 export default {
   transactions: {
     thresholdCount: 5,
@@ -12,5 +15,7 @@ export default {
     validation: {
       total: 10,
     }
-  }
+  },
+  ...approved,
+  ...banned,
 }

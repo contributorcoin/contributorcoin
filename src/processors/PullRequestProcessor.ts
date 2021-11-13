@@ -1,4 +1,5 @@
-import Github from './providers/github'
+import Github from '../providers/github'
+import { BadRequestError } from '../utils/error'
 
 export default class PullRequestProcessor {
   url: string
@@ -11,13 +12,13 @@ export default class PullRequestProcessor {
     url: string
   ): Promise<(ContributionTransaction | ApprovalTransaction)[]> {
     const github = url.match(
-      /https?:\/\/github.com\/(([-a-z0-9])*\/){2}commit\/([a-z0-9])*$/gm
+      /https:\/\/github.com\/(([-a-z0-9])*\/){2}commit\/([a-z0-9]{10,})*$/gm
     )
 
     if (github) {
       return await Github.verifyAndRetrieve(url)
     } else {
-      return []
+      throw new BadRequestError('Invalid URL provided')
     }
   }
 
@@ -28,7 +29,7 @@ export default class PullRequestProcessor {
 
     // Return if no verified data
     if (transactions.length === 0) {
-      throw Error('Contribution data cannot be verified')
+      throw  new BadRequestError('Contribution data cannot be verified')
     }
 
     return transactions
