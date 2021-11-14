@@ -1,7 +1,23 @@
-import fetch from 'node-fetch'
+import { Octokit } from 'octokit'
+import { createAppAuth } from '@octokit/auth-app'
 import GitProvider from './provider'
 import { BadRequestError } from '../utils/error'
 import logger from '../utils/logger'
+
+const octokitData: Record<string, unknown> = {}
+
+if (process.env.GITHUB_PRIVATE_KEY) {
+  octokitData['authStrategy'] = createAppAuth
+  octokitData['auth'] = {
+    appId: 1,
+    privateKey: process.env.GITHUB_PRIVATE_KEY,
+    installationId: 123
+  }
+} else if (process.env.GITHUB_PAT) {
+  octokitData['auth'] = process.env.GITHUB_PAT
+}
+
+const octokit = new Octokit(octokitData)
 
 export default class Github extends GitProvider {
   constructor(url: string) {
@@ -24,24 +40,21 @@ export default class Github extends GitProvider {
     }
 
     // Get PR and repo data
-    const pullsResponse = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/commits/${commit}/pulls`
+    const request = await octokit.request(
+      `GET /repos/${owner}/${repo}/commits/${commit}/pulls`
     )
 
-    // Convert data to JSON
-    const pullsData = await pullsResponse.json()
-
     // Check for error response
-    if (pullsData?.message) {
-      throw new BadRequestError(pullsData.message)
+    if (request.status !== 200) {
+      throw new BadRequestError('Could not get GitHub data')
     }
 
     // Check that pulls exist
-    if (pullsData.length === 0) {
+    if (request.data.length === 0) {
       throw new BadRequestError('No pull requests associated with this commit')
     }
 
-    const pr = pullsData[0]
+    const pr = request.data[0]
 
     // Repo info
     const repoData = pr.base.repo
@@ -75,18 +88,16 @@ export default class Github extends GitProvider {
     }
 
     // Get commit data
-    const commitResponse = await fetch(
-      `${repoData.url}/commits/${commit}`
+    const commitRequest = await octokit.request(
+      `GET /repos/${owner}/${repo}/commits/${commit}`
     )
 
-    const commitData = await commitResponse.json()
-
     // Commit info
-    const verified: boolean = commitData.commit.verification.verified
-    const signature: string = commitData.commit.verification.signature
-    const payload = commitData.commit.verification.payload.toString()
+    const verified: boolean = commitRequest.data.commit.verification.verified
+    const signature: string = commitRequest.data.commit.verification.signature
+    const payload = commitRequest.data.commit.verification.payload.toString()
 
-    const commitAuthor = commitData.author.id
+    const commitAuthor = commitRequest.data.author.id
 
     const authors: string[] = []
     const approvers: string[] = []
@@ -109,14 +120,11 @@ export default class Github extends GitProvider {
         for (const coauthor of payload.match(/Co-authored-by: (.*)<(.*)>/gm)) {
           const email = coauthor.split('<')[1].slice(0, -1)
 
-          const userResponse = await fetch(
-            // eslint-disable-next-line max-len
-            `https://api.github.com/search/users?q=${email}`
+          const userRequest = await octokit.request(
+            `GET /search/users?q=${email}`
           )
 
-          const userData = await userResponse.json()
-
-          if (userData?.message) {
+          if (userRequest.status !== 200) {
             logger(
               'error',
               // eslint-disable-next-line max-len
@@ -125,8 +133,8 @@ export default class Github extends GitProvider {
             continue
           }
 
-          if (userData.items && userData.items.length) {
-            const id = userData.items[0].id
+          if (userRequest.data.items && userRequest.data.items.length) {
+            const id = userRequest.data.items[0].id
             if (!authors.includes(id)) {
               authors.push(id)
             }
