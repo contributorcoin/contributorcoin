@@ -1,0 +1,8 @@
+menu_title: Table of Contents
+menu_items:
+  - title: Introduction
+    url: /
+  - title: Client
+    url: /client/
+  - title: Server
+    url: /server/

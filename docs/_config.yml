@@ -1,1 +1,9 @@
-remote_theme: contributorcoin/contributorcoin-jekyll-theme@v0.1.2
+remote_theme: contributorcoin/contributorcoin-jekyll-theme@v0.1.5
+
+title: Contributorcoin Docs
+description: Official documentation for Contributorcoin
+show_downloads: true
+show_gh_edit: true
+show_toc: true
+google_analytics:
+toc_title:
