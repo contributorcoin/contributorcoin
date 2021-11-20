@@ -27,6 +27,13 @@ describe('Account', () => {
     signature: 'signature1234567890',
   })
 
+  it('should create new account structure from class', () => {
+    expect(accounts).toMatchObject({
+      addresses: [],
+      balance: {},
+    })
+  })
+
   it('should initialize new accounts', () => {
     accounts.initialize(addresses[0])
     accounts.initialize(addresses[1])
