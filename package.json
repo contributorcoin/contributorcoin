@@ -16,7 +16,7 @@
     "build": "tsc -p tsconfig.build.json"
   },
   "devDependencies": {
-    "@types/body-parser": "^1.19.0",
+    "@types/body-parser": "^1.19.2",
     "@types/crypto-js": "^4.0.1",
     "@types/elliptic": "^6.4.12",
     "@types/eslint": "^7.29.0",
