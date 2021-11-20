@@ -1,7 +1,5 @@
 import ApprovalTransaction from '../transactions/approval'
 import ContributionTransaction from '../transactions/contribution'
-import ExchangeTransaction from '../transactions/exchange'
-import StakeTransaction from '../transactions/stake'
 import ValidationTransaction from '../transactions/validation'
 
 export default class Account {
@@ -30,7 +28,7 @@ export default class Account {
   }
 
   // Increase receiver balance
-  increment(to: (string | number), amount: number): void {
+  increment(to: string, amount: number): void {
     this.balance[to] += amount
   }
 
@@ -51,14 +49,12 @@ export default class Account {
     const to = transaction.to
 
     if (
-      transaction instanceof (
-        ApprovalTransaction || ContributionTransaction || ValidationTransaction
-      )
+      transaction instanceof ApprovalTransaction ||
+      transaction instanceof ContributionTransaction ||
+      transaction instanceof ValidationTransaction
     ) {
       this.increment(to, amount)
-    } else if (
-      transaction instanceof (ExchangeTransaction || StakeTransaction)
-    ) {
+    } else {
       const from = transaction.from
 
       if (from) {
