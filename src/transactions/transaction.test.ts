@@ -5,10 +5,6 @@ describe('Transaction', () => {
   const receiverWallet = new Wallet('receiver')
   const senderWallet = new Wallet('sender')
   const receiver = receiverWallet.getPublicKey()
-  const sender = senderWallet.getPublicKey()
-
-  console.log(receiver)
-  console.log(sender)
 
   it('should return true with validation', () => {
     expect(Transaction.validate()).toBeTruthy()

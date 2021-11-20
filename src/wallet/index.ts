@@ -52,8 +52,16 @@ export default class Wallet {
       )
     }
 
+    const output = {
+      to,
+      amount
+    }
+
     const transaction = new ExchangeTransaction({
-      from: this.publicKey, to, amount, signature: 'signed'
+      from: this.publicKey,
+      to,
+      amount,
+      signature: this.sign(ChainUtil.hash(output.toString()))
     })
 
     if (transaction) {

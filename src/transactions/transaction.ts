@@ -45,8 +45,8 @@ export default abstract class Transaction {
     senderWallet: Wallet
   ): string {
     const output = {
-      to: to,
-      amount: amount
+      to,
+      amount,
     }
 
     return senderWallet.sign(ChainUtil.hash(output.toString()))
