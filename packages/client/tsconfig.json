@@ -1,11 +1,14 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist/",
     "noImplicitAny": true,
     "module": "es6",
     "target": "es5",
+    "rootDir": "src",
+    "outDir": "build",
     "jsx": "react",
     "allowJs": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
   }
 }

@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_CONTEXT=server
+    ports:
+      - '3001:80'
+      - '5001:80'
+
+  client:
+    container_name: client
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_CONTEXT=client
+    ports:
+      - '3000:80'

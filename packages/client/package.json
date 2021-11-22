@@ -1,12 +1,14 @@
 {
   "name": "client",
+  "description": "React client for interacting with Contributorcoin API",
   "version": "0.1.0",
+  "author": "Contributorcoin",
   "private": true,
   "proxy": "http://localhost:3001",
   "main": "index.tsx",
   "scripts": {
-    "dev": "webpack-dev-server",
-    "build": "webpack mode='production'"
+    "start": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
   },
   "eslintConfig": {
     "extends": [

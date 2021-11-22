@@ -1,2 +1,9 @@
-node_modules
+# Folders
+node_modules/
+build/
+e2e/
+
+# Files
 npm-debug.log
+README.md
+jest.config.js

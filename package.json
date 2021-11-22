@@ -17,7 +17,8 @@
     "test:server": "yarn workspace server test",
     "build": "yarn build:client && yarn build:server",
     "build:client": "yarn workspace client build",
-    "build:server": "yarn workspace server build"
+    "build:server": "yarn workspace server build",
+    "docker": "docker-compose up -d"
   },
   "dependencies": {
     "concurrently": "^6.4.0"
