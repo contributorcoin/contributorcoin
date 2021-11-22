@@ -1,6 +1,8 @@
 {
   "name": "server",
+  "description": "Node / Express server for Contributorcoin API",
   "version": "0.1.0",
+  "author": "Contributorcoin",
   "private": true,
   "license": "MIT",
   "scripts": {
